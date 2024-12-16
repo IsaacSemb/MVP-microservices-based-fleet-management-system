@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <style>
+
+
+body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.vehicle-card {
+    width: 200px;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+}
+
+.vehicle-card h4 {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.vehicle-card hr {
+    border: none;
+    border-top: 1px solid black;
+    margin: 10px 0;
+}
+
+.vehicle-count p {
+    font-size: 1.5em;
+    margin: 10px 0;
+}
+
+.vehicle-status {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9em;
+}
+
+.vehicle-status p {
+    margin: 0;
+}
+
+.number {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+    </style>
+
+    <div class="vehicle-card">
+      <div class="vehicle-card-header">
+        <h4>{type}</h4>
+        <hr>
+        <div class="vehicle-count">count: <span>{number}</span></div>
+        <hr>
+      </div>
+      <div class="vehicle-card-footer">
+        <div class="vehicle-status">
+          <p>Available: {available}</p>
+          <p>Service: {service}</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

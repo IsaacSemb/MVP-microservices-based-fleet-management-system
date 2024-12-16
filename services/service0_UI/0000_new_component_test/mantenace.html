@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance Overview</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+.dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    color: #333;
+}
+
+.summary {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.summary-card {
+    flex: 1;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.summary-card h2 {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.summary-card p {
+    font-size: 24px;
+    color: #007BFF;
+}
+
+.details {
+    display: flex;
+    gap: 15px;
+}
+
+.details-panel {
+    flex: 1;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.details-panel h2 {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.details-panel ul {
+    list-style: none;
+    padding: 0;
+}
+
+.details-panel ul li {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #333;
+}
+
+    </style>
+    <div class="dashboard">
+        <div class="header">
+            <h1>Maintenance Overview</h1>
+        </div>
+        <div class="summary">
+            <div class="summary-card">
+                <h2>Scheduled Maintenance</h2>
+                <p>5 vehicles</p>
+            </div>
+            <div class="summary-card">
+                <h2>Recently Maintained</h2>
+                <p>3 vehicles</p>
+            </div>
+            <div class="summary-card">
+                <h2>Pending Repairs</h2>
+                <p>2 vehicles</p>
+            </div>
+            <div class="summary-card">
+                <h2>Overdue Maintenance</h2>
+                <p>1 vehicle</p>
+            </div>
+        </div>
+        <div class="details">
+            <div class="details-panel">
+                <h2>Scheduled Maintenance</h2>
+                <ul>
+                    <li>Vehicle ID: 1234 - Oil Change (12/14/2024)</li>
+                    <li>Vehicle ID: 5678 - Tire Rotation (12/15/2024)</li>
+                </ul>
+            </div>
+            <div class="details-panel">
+                <h2>Recent Maintenance</h2>
+                <ul>
+                    <li>Vehicle ID: 9012 - Brake Check (12/10/2024)</li>
+                    <li>Vehicle ID: 3456 - Battery Replacement (12/08/2024)</li>
+                </ul>
+            </div>
+            <div class="details-panel">
+                <h2>Pending Repairs</h2>
+                <ul>
+                    <li>Vehicle ID: 7890 - Transmission Issue (Reported: 12/09/2024)</li>
+                    <li>Vehicle ID: 1122 - AC Malfunction (Reported: 12/07/2024)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    // Simulate fetching data
+    const scheduledMaintenance = 5;
+    const recentlyMaintained = 3;
+    const pendingRepairs = 2;
+    const overdueMaintenance = 1;
+
+    document.querySelector('.summary-card:nth-child(1) p').textContent = `${scheduledMaintenance} vehicles`;
+    document.querySelector('.summary-card:nth-child(2) p').textContent = `${recentlyMaintained} vehicles`;
+    document.querySelector('.summary-card:nth-child(3) p').textContent = `${pendingRepairs} vehicles`;
+    document.querySelector('.summary-card:nth-child(4) p').textContent = `${overdueMaintenance} vehicles`;
+});
+
+    </script>
+</body>
+</html>
