@@ -5,6 +5,7 @@ API_gateway
 # Virtual environments
 *.venv*/
 .venv*/
+.venv
 
 # Environment files
 .env
@@ -37,7 +38,7 @@ logs/
 # Draw.io backups
 .*.drawio.bkp
 
-from react
+# from react
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies

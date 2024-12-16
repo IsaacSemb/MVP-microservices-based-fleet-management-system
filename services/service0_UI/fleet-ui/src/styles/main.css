@@ -1,0 +1,22 @@
+/* adding tail wind to the mix */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* delete after  */
+.bbb {
+  border: 5px solid red !important;
+}
+.bbb1 {
+  border: 5px solid green !important;
+}
+
+/* MAIN APP COMPONENT */
+.App {
+  background-color: antiquewhite;
+  font-family: "Raleway", sans-serif;
+  font-style: normal;
+}
+
+
+
