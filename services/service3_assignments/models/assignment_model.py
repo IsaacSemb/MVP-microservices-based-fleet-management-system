@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Enum
 from datetime import datetime, timezone
-from shared.database.db_utils import db
+from common.database.db_utils import db
 
 class Assignment(db.Model):
     __tablename__ = 'assignments'

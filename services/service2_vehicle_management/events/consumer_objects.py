@@ -1,4 +1,4 @@
-from services.service2_vehicle_management.message_handlers import Message_handler
+from services.service2_vehicle_management.events.message_handlers import Message_handler
 
 # Instantiate the message handler for this service
 handler = Message_handler()
@@ -13,14 +13,7 @@ SERVICE_2_CONSUMERS = [
             "routing_key": "",
             "handler":handler.handle_assignment_created
             
-        },
-        # {
-        #     "queue_name": "driver_status_queue",
-        #     "exchange": "driver_status_exchange",
-        #     "exchange_type": "direct",
-        #     "routing_key": "driver.status",
-        #     "handler": "handle_driver_status_update",
-        # },
+        }
     ]
     
 

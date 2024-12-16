@@ -1,6 +1,7 @@
 import json
 import requests
 import os
+from shared.logs.logger import logger
 
 SERVICE_1_URL = os.getenv('SERVICE_1_URL')
 
@@ -15,7 +16,7 @@ class Message_handler:
     
     def default(self):
         msg = 'NOT A CONSUMER, NOTHING TO CONSUME'
-        print(msg)
+        logger.debug(msg)
         return msg
     
     def handle_assignment_created(self, ch, method, properties, body):
@@ -29,7 +30,7 @@ class Message_handler:
             
             # Filter by event type
             if payload.get('event_type') != 'assignment_created':
-                print((f"Ignoring unsupported event type: {payload.get('event_type')}"))
+                logger.debug((f"Ignoring unsupported event type: {payload.get('event_type')}"))
                 # logging.warning(f"Ignoring unsupported event type: {payload.get('event_type')}")
                 # ch.basic_ack(delivery_tag=method.delivery_tag)
                 return

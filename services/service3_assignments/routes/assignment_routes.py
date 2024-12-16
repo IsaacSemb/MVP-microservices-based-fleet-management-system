@@ -1,13 +1,11 @@
 from flask import Blueprint, request, jsonify
 from models import Assignment
-from shared.database.db_utils import db
+from common.database.db_utils import db
 import os
 from services.service3_assignments.validation_and_fetch import validate_and_fetch_resource
-from shared.message_broker.rabbitmq_utils import RabbitMQ
+from common.message_broker.rabbitmq_utils import RabbitMQ
+from common.logs.logger import logger
 
-
-
-broker = RabbitMQ()
 
 # service urls
 SERVICE_1_URL = os.getenv('SERVICE_1_URL')
@@ -45,28 +43,33 @@ def add_assignment():
         db.session.add(new_assignment)
         db.session.commit()
 
-        # Publish to the broker
-        new_assignment_created_message = {
-            "event_type": "assignment_created",
-            "data": new_assignment.to_dict()
-        }
+        
         try:
+            # Publish to the broker
+            new_assignment_created_message = {
+                "event_type": "assignment_created",
+                "data": new_assignment.to_dict()
+            }
+            
+            # get broker
+            broker = RabbitMQ()
             broker.publish_message(
                 exchange='assignment_created_fanout_exchange',
                 exchange_type='fanout',
                 routing_key='',
                 message=new_assignment_created_message
             )
+            logger.info(f"published new assignment: {new_assignment.assignment_id}")
         except Exception as e:
             # Log broker error
-            print(f"Error publishing message to broker: {str(e)}")
+            logger.error(f"Error publishing message to broker: {str(e)}")
             return jsonify({"message": "Assignment created but failed to notify listeners", "assignment": new_assignment.to_dict()}), 201
 
         # Return success response
         return jsonify({"message": "Assignment created successfully", "assignment": new_assignment.to_dict()}), 201
 
     except Exception as e:
-        print(f"Error creating assignment: {str(e)}")
+        logger.error(f"Error creating assignment: {str(e)}")
         return jsonify({"error": "Internal Server Error"}), 500
 
 
@@ -87,7 +90,7 @@ def get_all_assignments():
         ]
         return jsonify(assignment_list), 200
     except Exception as e:
-        print(f"Error fetching assignments: {str(e)}")
+        logger.error(f"Error fetching assignments: {str(e)}")
         return jsonify({"error": "Internal Server Error"}), 500
     
     
@@ -100,7 +103,7 @@ def get_one_assignment(assignment_id):
             return jsonify({"error": "Assignment not found"}), 404
         return jsonify(assignment.to_dict()), 200
     except Exception as e:
-        print(f"Error fetching assignment: {str(e)}")
+        logger.error(f"Error fetching assignment: {str(e)}")
         return jsonify({"error": "Internal Server Error"}), 500
 
 
@@ -123,7 +126,7 @@ def update_assignment(assignment_id):
         return jsonify({"message": "Assignment updated successfully", "assignment": assignment.to_dict()}), 200
 
     except Exception as e:
-        print(f"Error updating assignment: {str(e)}")
+        logger.error(f"Error updating assignment: {str(e)}")
         return jsonify({"error": "Internal Server Error"}), 500
 
 
@@ -141,5 +144,5 @@ def delete_assignment(assignment_id):
         return jsonify({"message": "Assignment deleted successfully"}), 200
 
     except Exception as e:
-        print(f"Error deleting assignment: {str(e)}")
+        logger.error(f"Error deleting assignment: {str(e)}")
         return jsonify({"error": "Internal Server Error"}), 500

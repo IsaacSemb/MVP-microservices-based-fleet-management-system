@@ -12,15 +12,17 @@ load_dotenv("../.env")
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 sys.path.append(root_path)
 
-# Import shared modules
-from shared.database.db_utils import db, init_db
+# Import common modules
+from common.database.db_utils import db, init_db
+from common.logs.logger import logger
+
 
 # Flask application configuration
 APP_PORT = os.getenv("SERVICE_1_PORT")
 
 
 # Import models and routes
-from models import Driver
+# from models import Driver
 from routes import driver_blueprint
 
 # Create an instance of the Flask app
@@ -34,27 +36,24 @@ CORS(app)
 # Landing page for the server
 @app.route("/")
 def home():
-    return f"Server listening at port {APP_PORT}!"
+    logger.info(f"Server listening at port {APP_PORT}!")
+    return f"<h1>Server listening at port {APP_PORT}! [ DB -- {app.config['DB_AVAILABLE']}]</h1>"
 
 # Route to test database connection
 @app.route("/dbtest")
 def test_db():
     try:
         db.session.execute(text("SELECT 1"))
+        logger.info("checked database health and it is fine")
         return "Database connection successful!", 200
     except Exception as e:
+        logger.warning(f"Database health check failed: {e}")
         return f"Database connection failed: {e}", 500
 
 # Register blueprints
 app.register_blueprint(driver_blueprint)
 
-# Consumer necessities
-from shared.message_broker.consumer_manager import start_consumer_processes 
-from consumer_objects import SERVICE_1_CONSUMERS
-
-# Running the app
 if __name__ == "__main__":
-    start_consumer_processes(consumers=SERVICE_1_CONSUMERS)
     app.run(
         host=os.getenv("FLASK_HOST"),
         port=int(APP_PORT),

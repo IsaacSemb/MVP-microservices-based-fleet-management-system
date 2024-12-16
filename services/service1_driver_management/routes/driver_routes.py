@@ -1,8 +1,10 @@
 from flask import Blueprint, jsonify, request
 from models import Driver
-from shared.database.db_utils import db
+from common.database.db_utils import db
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.types import Enum
+from common.logs.logger import logger
+from common.message_broker.rabbitmq_utils import RabbitMQ
 
 
 
@@ -10,11 +12,9 @@ from sqlalchemy.types import Enum
 # creation of ther blue print for routing
 driver_blueprint = Blueprint("driver_bp", __name__)
 
-
 # creating a new driver
 @driver_blueprint.route('/drivers', methods=['POST'])
 def create_driver():
-    
     try:
         # Incoming data to the server
         data = request.get_json()
@@ -33,28 +33,51 @@ def create_driver():
         db.session.add(new_driver)
 
         # Commit the transaction
-        db.session.commit() 
+        db.session.commit()
+        
+        logger.info("new driver created")
+        
+        # send to to broker
+        try:
+            # create the message to send to broker
+            new_driver_created_message = {
+            "event_type": "driver_created",
+            "data": new_driver.to_dict()
+            }
+            # get broker
+            broker = RabbitMQ()
+            broker.publish_message(
+                exchange='driver_created_fanout_exchange',
+                exchange_type='fanout',
+                routing_key='',
+                message=new_driver_created_message
+            )
+            logger.info(f"published new driver: {new_driver.driver_id}")
+        except Exception as e:
+            # Log broker error
+            logger.error(f"Error publishing message to broker: {str(e)}")
+            return jsonify({"message": "Driver created but failed to notify listeners"}), 201
 
         # Return success message
         return jsonify({"message": "Driver created successfully!", "driver": new_driver.to_dict()}), 201
 
     # case of missing keys in the input data
     except KeyError as e:
-        db.session.rollback()  # Rollback the transaction
+        db.session.rollback() 
         missing_field = str(e).strip("'")
-        print(f"Missing field: {missing_field}")
+        logger.debug(f"Missing field: {missing_field}")
         return jsonify({"error": f"Missing required field: {missing_field}"}), 400
 
     # case of database errors from mysql
     except SQLAlchemyError as e:
         db.session.rollback()  # Rollback the transaction
-        print(f"Database error: {str(e)}")
+        logger.error(f"Database error: {str(e)}")
         return jsonify({"error": "An error occurred while saving the driver to the database. Please try again."}), 500
 
     except Exception as e:
         # Handle any other unexpected errors
         db.session.rollback()  # Rollback the transaction
-        print(f"Unexpected error: {str(e)}")
+        logger.error(f"Unexpected error: {str(e)}")
         return jsonify({"error": "An unexpected error occurred. Please try again."}), 500
 
 
@@ -72,7 +95,6 @@ def get_all_drivers():
                 
         # Dynamically get the enum options from the Driver model
         status_enum_values = Driver.__table__.columns['status'].type.enums
-        print(status_enum_values)
 
         # Initialize summary variables
         total_count = len(driver_objects)
@@ -92,27 +114,32 @@ def get_all_drivers():
 
         # Return the response based on the requested type
         if response_type == 'summary':
+            logger.info("request for summarized drivers")
             return jsonify({"summary": summary}), 200
+        
         elif response_type == 'details':
+            logger.info("request for detailed drivers")
             return jsonify({"details": driver_objects}), 200
+        
         else:
             # Default full response
             response = {
                 "summary": summary,
                 "details": driver_objects
             }
+            logger.info("request for both detailed and summarized drivers")
             return jsonify(response), 200
 
     except SQLAlchemyError as e:
         # Log the error for debugging
-        print(f"Database error occurred: {str(e)}")
+        logger.error(f"Database error occurred: {str(e)}")
 
         # Return a JSON error response with a 500 status code
         return jsonify({"error": "An error occurred while fetching drivers. Please try again later."}), 500
 
     except Exception as e:
         # Catch any other unexpected errors
-        print(f"Unexpected error occurred: {str(e)}")
+        logger.error(f"Unexpected error occurred: {str(e)}")
 
         # Return a generic error response
         return jsonify({"error": "An unexpected error occurred. Please try again later."}), 500
@@ -133,12 +160,12 @@ def get_driver(driver_id):
 
     except SQLAlchemyError as e:
         # Handle database-related errors
-        print(f"Database error occurred: {str(e)}")
+        logger.error(f"Database error occurred: {str(e)}")
         return jsonify({"error": "An error occurred while fetching the driver. Please try again later."}), 500
 
     except Exception as e:
         # Handle unexpected errors
-        print(f"Unexpected error occurred: {str(e)}")
+        logger.error(f"Unexpected error occurred: {str(e)}")
         return jsonify({"error": "An unexpected error occurred. Please try again later."}), 500
 
 
@@ -160,13 +187,13 @@ def delete_driver(driver_id):
     except SQLAlchemyError as e:
         # Handle database-related errors
         db.session.rollback()
-        print(f"Database error occurred: {str(e)}")
+        logger.error(f"Database error occurred: {str(e)}")
         return jsonify({"error": "An error occurred while deleting the driver. Please try again later."}), 500
 
     except Exception as e:
         # Handle unexpected errors
         db.session.rollback()
-        print(f"Unexpected error occurred: {str(e)}")
+        logger.error(f"Unexpected error occurred: {str(e)}")
         return jsonify({"error": "An unexpected error occurred. Please try again later."}), 500
 
         
@@ -198,12 +225,12 @@ def update_driver(driver_id):
     except SQLAlchemyError as e:
         # Handle database-related errors
         db.session.rollback()
-        print(f"Database error occurred: {str(e)}")
+        logger.error(f"Database error occurred: {str(e)}")
         return jsonify({"error": "An error occurred while updating the driver. Please try again later."}), 500
 
     except Exception as e:
         # Handle unexpected errors
         db.session.rollback()
-        print(f"Unexpected error occurred: {str(e)}")
+        logger.error(f"Unexpected error occurred: {str(e)}")
         return jsonify({"error": "An unexpected error occurred. Please try again later."}), 500
     

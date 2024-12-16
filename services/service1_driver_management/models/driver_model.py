@@ -1,5 +1,5 @@
 from sqlalchemy import Enum
-from shared.database.db_utils import db
+from common.database.db_utils import db
 
 
 

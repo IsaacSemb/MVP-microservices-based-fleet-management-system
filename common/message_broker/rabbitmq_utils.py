@@ -1,6 +1,7 @@
 import pika
 import json
 import os
+from common.logs.logger import logger
 
 
 class RabbitMQ:
@@ -23,7 +24,7 @@ class RabbitMQ:
             self.channel = self.connection.channel()
             
         except pika.exceptions.AMQPConnectionError as e:
-            print(f"Failed to connect to RabbitMQ: {e}")
+            logger.warning(f"Failed to connect to RabbitMQ: {e}")
             raise
 
     def publish_message(self, exchange, routing_key, message, exchange_type="direct"):
@@ -31,24 +32,26 @@ class RabbitMQ:
         """Publish a message to an exchange."""
         
         try:
-            
             self.connect()
-            self.channel.exchange_declare(exchange=exchange, exchange_type=exchange_type, durable=True)
+            
+            self.channel.exchange_declare(
+                exchange=exchange, 
+                exchange_type=exchange_type, 
+                durable=True
+                )
+            
             self.channel.basic_publish(
                 exchange=exchange,
                 routing_key=routing_key,
                 body=json.dumps(message),
                 properties=pika.BasicProperties(delivery_mode=2)  # Persistent
             )
-            
-            print(f"Message published to exchange '{exchange}' with routing key '{routing_key}': {message}")
+            logger.info(f"Broker Message to ['{exchange}'] - routing key['{routing_key}']-message-[{message['event_type']}]")
         
         except Exception as e:
-            
-            print(f"Failed to publish message: {e}")
+            logger.error(f"Failed to publish message: {e}")
             
         finally:
-            
             self.close_connection()
             
 
@@ -58,9 +61,20 @@ class RabbitMQ:
         
         try:
             self.connect()
-            self.channel.queue_declare(queue=queue_name, durable=True)
-            self.channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
+            
+            self.channel.queue_declare(
+                queue=queue_name, 
+                durable=True
+                )
+            
+            self.channel.basic_consume(
+                queue=queue_name, 
+                on_message_callback=callback, 
+                auto_ack=True
+                )
+            
             print(f"Waiting for messages from queue '{queue_name}'. To exit press CTRL+C")
+            
             self.channel.start_consuming()
             
         except Exception as e:

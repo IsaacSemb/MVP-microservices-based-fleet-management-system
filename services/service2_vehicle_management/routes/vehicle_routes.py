@@ -1,13 +1,12 @@
 from flask import Blueprint, jsonify, request
 from models import Vehicle
-from shared.database.db_utils import db
+from common.database.db_utils import db
 from sqlalchemy.exc import SQLAlchemyError
-
+from common.logs.logger import logger
+from common.message_broker.rabbitmq_utils import RabbitMQ
+ 
 
 vehicle_blueprint = Blueprint("vehicle_bp", __name__)
-
-
-
 
 @vehicle_blueprint.route('/vehicles', methods=['POST'])
 def register_vehicle():
@@ -23,12 +22,38 @@ def register_vehicle():
         )
         db.session.add(new_vehicle)
         db.session.commit()
+        
+        logger.info(f"new vehicle added to the database: [vehicle_plate:{new_vehicle.reg_no}]")
+        
+        try:
+            # Publish to the broker
+            new_vehicle_created_message = {
+                "event_type": "vehicle_created",
+                "data": new_vehicle.to_dict()
+            }
+            
+            # get broker
+            broker = RabbitMQ()
+            broker.publish_message(
+                exchange='vehicle_created_fanout_exchange',
+                exchange_type='fanout',
+                routing_key='',
+                message=new_vehicle_created_message
+            )
+            logger.info(f"published new vehicle: {new_vehicle.vehicle_id}")
+        except Exception as e:
+            # Log broker error
+            logger.error(f"Error publishing message to broker: {str(e)}")
+            return jsonify({"message": "vehicle created but failed to notify listeners"}), 201
+        
         return jsonify({"message": "Vehicle registered successfully!"}), 201
     except SQLAlchemyError as sql_err:
         db.session.rollback()
+        logger.error(f"Error creating vehicle: {str(sql_err)}")
         return jsonify({"error": f"Database error: {str(sql_err)}"}), 500
     except Exception as e:
         db.session.rollback()
+        logger.error(f"Error creating vehicle: {str(e)}")
         return jsonify({"error": str(e)}), 400
 
 @vehicle_blueprint.route('/vehicles', methods=['GET'])
@@ -89,8 +114,10 @@ def get_all_vehicles():
         
         
     except SQLAlchemyError as sql_err:
+        logger.error(f"Error fetching vehicles: {str(sql_err)}")
         return jsonify({"error": f"Database error: {str(sql_err)}"}), 500
     except Exception as e:
+        logger.error(f"Error fetching vehicles: {str(e)}")
         return jsonify({"error": str(e)}), 400
 
     
@@ -103,8 +130,10 @@ def get_vehicle(vehicle_id):
             return jsonify(vehicle.to_dict()), 200
         return jsonify({"error": "Vehicle not found"}), 404
     except SQLAlchemyError as sql_err:
+        logger.error(f"Error fetching vehicles: {str(sql_err)}")
         return jsonify({"error": f"Database error: {str(sql_err)}"}), 500
     except Exception as e:
+        logger.error(f"Error fetching vehicles: {str(e)}")
         return jsonify({"error": str(e)}), 400
 
 @vehicle_blueprint.route('/vehicles/<int:vehicle_id>', methods=['DELETE'])
@@ -118,9 +147,11 @@ def delete_vehicle(vehicle_id):
         return jsonify({"error": "Vehicle not found"}), 404
     except SQLAlchemyError as sql_err:
         db.session.rollback()
+        logger.error(f"Error fetching vehicles: {str(sql_err)}")
         return jsonify({"error": f"Database error: {str(sql_err)}"}), 500
     except Exception as e:
         db.session.rollback()
+        logger.error(f"Error fetching vehicles: {str(e)}")
         return jsonify({"error": str(e)}), 400
 
 @vehicle_blueprint.route('/vehicles/<int:vehicle_id>', methods=['PUT'])
@@ -143,7 +174,9 @@ def update_vehicle(vehicle_id):
         return jsonify({"message": "Vehicle updated successfully"}), 200
     except SQLAlchemyError as sql_err:
         db.session.rollback()
+        logger.error(f"Error fetching vehicles: {str(sql_err)}") 
         return jsonify({"error": f"Database error: {str(sql_err)}"}), 500
     except Exception as e:
         db.session.rollback()
+        logger.error(f"Error fetching vehicles: {str(e)}")        
         return jsonify({"error": str(e)}), 400

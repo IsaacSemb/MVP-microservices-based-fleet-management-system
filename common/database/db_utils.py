@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import OperationalError
 import os
+from common.logs.logger import logger
 
 
 db = SQLAlchemy()
@@ -23,26 +24,15 @@ def init_db(app, db_name=None):
     # Set database URI dynamically
     app.config["SQLALCHEMY_DATABASE_URI"] = DatabaseConfig.get_uri(username, password, host, port, database)
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-
-
-
-    # db.init_app(app)
-    # with app.app_context():
-    #     db.create_all()
-    #     print(f"Database '{database}' tables created successfully!")
-        
-        
-    
     
     try:
         db.init_app(app)
         with app.app_context():
             db.create_all()
-            app.logger.info("Database tables created successfully!")
+            # logger.info("Database tables created successfully!")
             app.config['DB_AVAILABLE'] = True
     except OperationalError as e:
         # Log the error and fallback to degraded mode
-        app.logger.error(f"Database connection failed: {e}")
+        logger.error(f"Database connection failed: {e}")
         app.config['DB_AVAILABLE'] = False
-        app.logger.warning("Running in degraded mode: database operations disabled.")
+        logger.critical("Running in degraded mode: database operations disabled.")

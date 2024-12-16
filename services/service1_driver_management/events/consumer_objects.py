@@ -1,4 +1,4 @@
-from services.service1_driver_management.message_handlers import Message_handler
+from services.service1_driver_management.tasks.message_handlers import Message_handler
 
 # Instantiate the message handler for this service
 handler = Message_handler()
