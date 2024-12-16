@@ -1,0 +1,57 @@
+[
+  {
+      "task_id": 1,
+      "task": "Deliver goods to client A",
+      "assignment_id": 2,
+      "start_date_time": "2024-12-02T08:00:00Z",
+      "expected_completion_date_time": "2024-12-02T12:00:00Z",
+      "end_date_time": null,
+      "description": "Deliver packaged goods to client A's warehouse.",
+      "priority": "high",
+      "status": "scheduled"
+  },
+  {
+      "task_id": 2,
+      "task": "Pick up supplies from depot",
+      "assignment_id": 3,
+      "start_date_time": "2024-12-03T09:00:00Z",
+      "expected_completion_date_time": "2024-12-03T11:00:00Z",
+      "end_date_time": null,
+      "description": "Pick up supplies and deliver to main office.",
+      "priority": "medium",
+      "status": "ongoing"
+  },
+  {
+      "task_id": 3,
+      "task": "Delivery",
+      "assignment_id": 1,
+      "start_date_time": "2024-12-04T07:00:00Z",
+      "expected_completion_date_time": "2024-12-04T09:00:00Z",
+      "end_date_time": "2024-12-04T09:30:00Z",
+      "description": "deliver good to client",
+      "priority": "low",
+      "status": "completed"
+  },
+  {
+      "task_id": 4,
+      "task": "drive passenger",
+      "assignment_id": 4,
+      "start_date_time": "2024-12-02T13:00:00Z",
+      "expected_completion_date_time": "2024-12-02T16:00:00Z",
+      "end_date_time": null,
+      "description": "take passenger to site B.",
+      "priority": "critical",
+      "status": "scheduled"
+  },
+  {
+      "task_id": 5,
+      "task": "Client meeting at HQ",
+      "assignment_id": 5,
+      "start_date_time": "2024-12-05T10:00:00Z",
+      "expected_completion_date_time": "2024-12-05T12:00:00Z",
+      "end_date_time": null,
+      "description": "Driver to attend a meeting with the client at headquarters.",
+      "priority": "medium",
+      "status": "scheduled"
+  }
+]

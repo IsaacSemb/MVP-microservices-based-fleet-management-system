@@ -1,0 +1,8 @@
+
+tree.txt
+
+tree -I node_modules -d
+
+tree -d  
+
+tree -L 1 -I node_modules -d

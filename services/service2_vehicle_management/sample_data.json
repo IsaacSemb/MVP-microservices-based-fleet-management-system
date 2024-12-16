@@ -1,0 +1,102 @@
+[
+  {
+    "vehicle_id": 1,
+    "make": "Toyota",
+    "model": "Hiace",
+    "year": 2015,
+    "reg_no": "JZX2049",
+    "fuel_type": "petrol",
+    "vehicle_type": "van",
+    "status": "available"
+  },
+  {
+    "vehicle_id": 2,
+    "make": "Honda",
+    "model": "Civic",
+    "year": 2011,
+    "reg_no": "TYR1837",
+    "fuel_type": "diesel",
+    "vehicle_type": "car",
+    "status": "available"
+  },
+  {
+    "vehicle_id": 3,
+    "make": "Ford",
+    "model": "Transit",
+    "year": 2021,
+    "reg_no": "NHP4785",
+    "fuel_type": "hybrid",
+    "vehicle_type": "van",
+    "status": "available"
+  },
+  {
+    "vehicle_id": 4,
+    "make": "Chevrolet",
+    "model": "Silverado",
+    "year": 2018,
+    "reg_no": "ZQC1256",
+    "fuel_type": "petrol",
+    "vehicle_type": "truck",
+    "status": "available"
+  },
+  {
+    "vehicle_id": 5,
+    "make": "Nissan",
+    "model": "Leaf",
+    "year": 2022,
+    "reg_no": "BLR3952",
+    "fuel_type": "electric",
+    "vehicle_type": "car",
+    "status": "available"
+  },
+  {
+    "vehicle_id": 6,
+    "make": "BMW",
+    "model": "X6",
+    "year": 2021,
+    "reg_no": "XVM7310",
+    "fuel_type": "diesel",
+    "vehicle_type": "truck",
+    "status": "available"
+  },
+  {
+    "vehicle_id": 7,
+    "make": "Hyundai",
+    "model": "H-1",
+    "year": 2019,
+    "reg_no": "HTG5284",
+    "fuel_type": "petrol",
+    "vehicle_type": "van",
+    "status": "available"
+  },
+  {
+    "vehicle_id": 8,
+    "make": "Kia",
+    "model": "Sorento",
+    "year": 2020,
+    "reg_no": "RKL9821",
+    "fuel_type": "hybrid",
+    "vehicle_type": "car",
+    "status": "available"
+  },
+  {
+    "vehicle_id": 9,
+    "make": "Mercedes-Benz",
+    "model": "Sprinter",
+    "year": 2006,
+    "reg_no": "WDF6143",
+    "fuel_type": "diesel",
+    "vehicle_type": "bus",
+    "status": "available"
+  },
+  {
+    "vehicle_id": 10,
+    "make": "Subaru",
+    "model": "Outback",
+    "year": 2013,
+    "reg_no": "MPS8472",
+    "fuel_type": "petrol",
+    "vehicle_type": "car",
+    "status": "available"
+  }
+]

@@ -1,0 +1,92 @@
+[
+  {
+    "driver_id": 1,
+    "first_name": "isaac",
+    "last_name": "ssembuusi",
+    "sex": "male",
+    "license_no": "D12345678",
+    "contact_info": "+447425123456",
+    "status":"available"
+  },
+  {
+    "driver_id": 2,
+    "first_name": "nicho",
+    "last_name": "mpanga",
+    "sex": "male",
+    "license_no": "D87654321",
+    "contact_info": "+447481234567",
+    "status":"available"
+  },
+  {
+    "driver_id": 3,
+    "first_name": "miriam",
+    "last_name": "masette",
+    "sex": "female",
+    "license_no": "D23456789",
+    "contact_info": "+447512345678",
+    "status":"available"
+  },
+  {
+    "driver_id": 4,
+    "first_name": "francis",
+    "last_name": "kiwewa",
+    "sex": "male",
+    "license_no": "D98765432",
+    "contact_info": "+447568456789",
+    "status":"available"
+  },
+  {
+    "driver_id": 5,
+    "first_name": "ivan",
+    "last_name": "nyombi",
+    "sex": "male",
+    "license_no": "D34567890",
+    "contact_info": "+447623567890",
+    "status":"available"
+  },
+  {
+    "driver_id": 6,
+    "first_name": "stella",
+    "last_name": "nanyonjo",
+    "sex": "female",
+    "license_no": "D67890123",
+    "contact_info": "+447721678901",
+    "status":"available"
+  },
+  {
+    "driver_id": 7,
+    "first_name": "dorcas",
+    "last_name": "nanyonga",
+    "sex": "female",
+    "license_no": "D56789012",
+    "contact_info": "+447834789012",
+    "status":"available"
+  },
+  {
+    "driver_id": 8,
+    "first_name": "arnold",
+    "last_name": "ochom",
+    "sex": "male",
+    "license_no": "D45678901",
+    "contact_info": "+447910890123",
+    "status":"available"
+  },
+  {
+    "driver_id": 9,
+    "first_name": "jame",
+    "last_name": "opio",
+    "sex": "male",
+    "license_no": "D78901234",
+    "contact_info": "+447946901234",
+    "status":"available"
+  },
+  {
+    "driver_id": 10,
+    "first_name": "frank",
+    "last_name": "mubiru",
+    "sex": "male",
+    "license_no": "D90123456",
+    "contact_info": "+447983012345",
+    "status":"available"
+  }
+]

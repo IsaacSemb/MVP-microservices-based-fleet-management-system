@@ -1,0 +1,1 @@
+from .tasks_routes import task_blueprint

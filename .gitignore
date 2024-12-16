@@ -1,0 +1,39 @@
+# custom tailored
+service0_UI
+API_gateway
+0000_LEARNINGS
+
+# Virtual environments
+*.venv*/
+.venv*/
+
+# Environment files
+.env
+*.env.*
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Node.js dependencies
+node_modules/
+
+# Docker ignore
+.dockerignore
+
+# IDE settings
+.vscode/
+.idea/
+
+# Temporary/backup files
+*~
+*.swp
+.*.bkp
+
+# Log files
+*.log
+logs/
+
+# Draw.io backups
+.*.drawio.bkp

@@ -1,0 +1,22 @@
+[
+  {
+      "schedule_id": 1,
+      "schedule_type": "Maintenance",
+      "schedule_type_id": 3,
+      "start_date_time": "2024-12-05T08:00:00Z",
+      "end_date_time": "2024-12-05T12:00:00Z",
+      "expected_completion": "2024-12-05T14:00:00Z",
+      "status": "scheduled",
+      "description": "Routine maintenance for vehicle"
+  },
+  {
+      "schedule_id": 2,
+      "schedule_type": "task",
+      "schedule_type_id": 4,
+      "start_date_time": "2024-12-06T09:00:00Z",
+      "end_date_time": "2024-12-06T15:00:00Z",
+      "expected_completion": "2024-12-06T18:00:00Z",
+      "status": "ongoing",
+      "description": "Delivery of goods to warehouse B"
+  }
+]
