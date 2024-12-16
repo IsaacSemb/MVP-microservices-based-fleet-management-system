@@ -16,7 +16,7 @@ sys.path.append(root_path)
 from shared.database.db_utils import db, init_db
 
 # Flask application configuration
-APP_PORT = os.getenv("SERVICE_1_PORT")
+APP_PORT = os.getenv("SERVICE_6_PORT")
 
 # import the models 
 from models import FuelConsumption 
