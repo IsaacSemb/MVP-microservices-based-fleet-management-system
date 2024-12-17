@@ -7,8 +7,6 @@ from common.logs.logger import logger
 from common.message_broker.rabbitmq_utils import RabbitMQ
 
 
-
-
 # creation of ther blue print for routing
 driver_blueprint = Blueprint("driver_bp", __name__)
 
@@ -30,12 +28,13 @@ def create_driver():
         )
 
         # Add the new driver to the database session
-        db.session.add(new_driver)
+        # db.session.add(new_driver)
 
         # Commit the transaction
-        db.session.commit()
+        # db.session.commit()
         
         logger.info("new driver created")
+        logger.info(new_driver)
         
         # send to to broker
         try:
@@ -44,6 +43,8 @@ def create_driver():
             "event_type": "driver_created",
             "data": new_driver.to_dict()
             }
+            logger.info(new_driver_created_message)
+            
             # get broker
             broker = RabbitMQ()
             broker.publish_message(

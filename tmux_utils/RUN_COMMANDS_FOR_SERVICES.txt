@@ -1,0 +1,34 @@
+
+SERVICE 1
+
+/mnt/c/Users/ikesemb/Desktop/MASTERS\ PROJECT/001-DISSERTATION/000_proof_of_concept_stuff/MSA_ITERATION_3/.venv/Scripts/python.exe "C:/Users/ikesemb/Desktop/MASTERS PROJECT/001-DISSERTATION/000_proof_of_concept_stuff/MSA_ITERATION_3/services/service1_driver_management/app.py"
+
+
+SERVICE 2
+
+/mnt/c/Users/ikesemb/Desktop/MASTERS\ PROJECT/001-DISSERTATION/000_proof_of_concept_stuff/MSA_ITERATION_3/.venv/Scripts/python.exe "C:/Users/ikesemb/Desktop/MASTERS PROJECT/001-DISSERTATION/000_proof_of_concept_stuff/MSA_ITERATION_3/services/service2_vehicle_management/app.py"
+
+SERVICE 3
+
+/mnt/c/Users/ikesemb/Desktop/MASTERS\ PROJECT/001-DISSERTATION/000_proof_of_concept_stuff/MSA_ITERATION_3/.venv/Scripts/python.exe "C:/Users/ikesemb/Desktop/MASTERS PROJECT/001-DISSERTATION/000_proof_of_concept_stuff/MSA_ITERATION_3/services/service3_assignments/app.py"
+
+
+SERVICE 4
+
+/mnt/c/Users/ikesemb/Desktop/MASTERS\ PROJECT/001-DISSERTATION/000_proof_of_concept_stuff/MSA_ITERATION_3/.venv/Scripts/python.exe "C:/Users/ikesemb/Desktop/MASTERS PROJECT/001-DISSERTATION/000_proof_of_concept_stuff/MSA_ITERATION_3/services/service4_maintenance_repairs/app.py"
+
+
+
+SERVICE 5
+
+/mnt/c/Users/ikesemb/Desktop/MASTERS\ PROJECT/001-DISSERTATION/000_proof_of_concept_stuff/MSA_ITERATION_3/.venv/Scripts/python.exe "C:/Users/ikesemb/Desktop/MASTERS PROJECT/001-DISSERTATION/000_proof_of_concept_stuff/MSA_ITERATION_3/services/service5_scheduling/app.py"
+
+
+SERVICE 6
+
+/mnt/c/Users/ikesemb/Desktop/MASTERS\ PROJECT/001-DISSERTATION/000_proof_of_concept_stuff/MSA_ITERATION_3/.venv/Scripts/python.exe "C:/Users/ikesemb/Desktop/MASTERS PROJECT/001-DISSERTATION/000_proof_of_concept_stuff/MSA_ITERATION_3/services/service6_fuel_consumption_service/app.py"
+
+
+SERVICE 7
+
+/mnt/c/Users/ikesemb/Desktop/MASTERS\ PROJECT/001-DISSERTATION/000_proof_of_concept_stuff/MSA_ITERATION_3/.venv/Scripts/python.exe "C:/Users/ikesemb/Desktop/MASTERS PROJECT/001-DISSERTATION/000_proof_of_concept_stuff/MSA_ITERATION_3/services/service7_tasks_services/app.py"

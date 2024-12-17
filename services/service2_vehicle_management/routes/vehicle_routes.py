@@ -20,8 +20,8 @@ def register_vehicle():
             vehicle_type=data["vehicle_type"],
             status=data["status"]
         )
-        db.session.add(new_vehicle)
-        db.session.commit()
+        # db.session.add(new_vehicle)
+        # db.session.commit()
         
         logger.info(f"new vehicle added to the database: [vehicle_plate:{new_vehicle.reg_no}]")
         

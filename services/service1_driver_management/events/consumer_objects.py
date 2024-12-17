@@ -1,4 +1,4 @@
-from services.service1_driver_management.tasks.message_handlers import Message_handler
+from services.service1_driver_management.events.message_handlers import Message_handler
 
 # Instantiate the message handler for this service
 handler = Message_handler()
@@ -11,13 +11,18 @@ SERVICE_1_CONSUMERS = [
         "exchange": "assignment_created_fanout_exchange",
         "exchange_type": "fanout",
         "routing_key": "",
-        "handler": handler.handle_assignment_created,
+        "callback": handler.handle_assignment_created,
     },
-    # {
-    #     "queue_name": "driver_status_queue",
-    #     "exchange": "driver_status_exchange",
-    #     "exchange_type": "direct",
-    #     "routing_key": "driver.status",
-    #     "handler": "handle_driver_status_update",
-    # },
+    {
+        "queue_name":"sample_driver_created",
+        "exchange":"driver_created_fanout_exchange",
+        "exchange_type":"fanout",
+        "callback":handler.handle_driver_created
+    },
+    {
+        "queue_name":"sample_vehicle_created",
+        "exchange":"vehicle_created_fanout_exchange",
+        "exchange_type":"fanout",
+        "callback":handler.handle_vehicle_created
+    }
 ]

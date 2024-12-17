@@ -1,7 +1,7 @@
 import json
 import requests
 import os
-from shared.logs.logger import logger
+from common.logs.logger import logger
 
 SERVICE_1_URL = os.getenv('SERVICE_1_URL')
 
@@ -19,6 +19,14 @@ class Message_handler:
         logger.debug(msg)
         return msg
     
+    def handle_driver_created(self, ch, method, properties, body):
+        logger.info(body)
+        
+    
+    def handle_vehicle_created(self, ch, method, properties, body):
+        logger.info(body)
+
+        
     def handle_assignment_created(self, ch, method, properties, body):
         """
         Callback function for consuming assignment-created messages.
@@ -30,11 +38,9 @@ class Message_handler:
             
             # Filter by event type
             if payload.get('event_type') != 'assignment_created':
-                logger.debug((f"Ignoring unsupported event type: {payload.get('event_type')}"))
-                # logging.warning(f"Ignoring unsupported event type: {payload.get('event_type')}")
+                logger.warning(f"Ignoring unsupported event type: {payload.get('event_type')}")
                 # ch.basic_ack(delivery_tag=method.delivery_tag)
                 return
-            
             
             # extract data from the payload
             data = payload.get('data', {})
@@ -42,21 +48,19 @@ class Message_handler:
             # extract the driver id from the data
             driver_id = data.get('driver_id')
             
-            print('\n\nthe payload\n',payload)
-            print('\n\nthe payload data\n',payload.get('data', {}))
-            print('\n\nthe driver_id from payload ----',data.get('driver_id'))
+            logger.info(payload)          
             
             
             if not driver_id:
                 print("Driver ID missing")
                 # logging.error("Driver ID is missing from the assignment message.")
-                
                 # Acknowledge message to avoid blocking the queue
                 # ch.basic_ack(delivery_tag=method.delivery_tag)
                 return
             
             else:
                 print(f"Driver ID is {driver_id}.\n")
+                return
                 # logging.info(f"Driver ID is {driver_id}.")
                 
                 # Acknowledge message to avoid blocking the queue
