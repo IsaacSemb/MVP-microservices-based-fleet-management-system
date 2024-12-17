@@ -1,10 +1,7 @@
 import pika
 import json
 import os
-import sys
-import threading
 from common.logs.logger import logger
-
 
 class RabbitMQ:
     """This class holds all utility functions and variables for RabbitMQ message broker"""

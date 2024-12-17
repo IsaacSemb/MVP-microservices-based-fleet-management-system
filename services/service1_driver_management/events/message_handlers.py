@@ -1,7 +1,9 @@
 import json
-import requests
 import os
 from common.logs.logger import logger
+from services.service1_driver_management.models.driver_model import Driver
+from services.service1_driver_management.app import app
+from common.database.db_utils import db
 
 SERVICE_1_URL = os.getenv('SERVICE_1_URL')
 
@@ -26,12 +28,11 @@ class Message_handler:
     def handle_vehicle_created(self, ch, method, properties, body):
         logger.info(body)
 
-        
+            
     def handle_assignment_created(self, ch, method, properties, body):
         """
         Callback function for consuming assignment-created messages.
         """
-        
         try:
             # Parse the message body
             payload = json.loads(body)
@@ -39,62 +40,42 @@ class Message_handler:
             # Filter by event type
             if payload.get('event_type') != 'assignment_created':
                 logger.warning(f"Ignoring unsupported event type: {payload.get('event_type')}")
-                # ch.basic_ack(delivery_tag=method.delivery_tag)
                 return
             
-            # extract data from the payload
-            data = payload.get('data', {})
+            with app.app_context():
             
-            # extract the driver id from the data
-            driver_id = data.get('driver_id')
-            
-            logger.info(payload)          
-            
-            
-            if not driver_id:
-                print("Driver ID missing")
-                # logging.error("Driver ID is missing from the assignment message.")
-                # Acknowledge message to avoid blocking the queue
-                # ch.basic_ack(delivery_tag=method.delivery_tag)
-                return
-            
-            else:
-                print(f"Driver ID is {driver_id}.\n")
-                return
-                # logging.info(f"Driver ID is {driver_id}.")
+                # Extract data from the payload
+                data = payload.get('data', {})
                 
-                # Acknowledge message to avoid blocking the queue
-                # ch.basic_ack(delivery_tag=method.delivery_tag)
+                # Extract the driver ID from the data
+                driver_id = data.get('driver_id')
+                logger.info(f"Received assignment_created event: {payload}")
                 
+                if not driver_id:
+                    logger.error("Driver ID missing in the assignment message.")
+                    return
                 
-            # Prepare the URL and payload for the driver update
-            url = f"{SERVICE_1_URL}/drivers/{driver_id}"
-            update_payload = {"status": "assigned"}
+                # Query the Driver model for the given driver_id
+                driver = Driver.query.filter_by(driver_id=driver_id).first()
+                
+                if not driver:
+                    logger.error(f"Driver with ID {driver_id} not found in the database.")
+                    return
+                
+                # Update driver's status to 'assigned'
+                try:
+                    driver.status = "assigned"
+                    db.session.commit()
+                    logger.info(f"Driver ID {driver_id} status successfully updated to 'assigned'.")
+                except Exception as db_error:
+                    db.session.rollback()
+                    logger.error(f"Database error while updating driver status: {str(db_error)}")
+                    return
+                
+                logger.info(f"Driver with ID {driver_id} status updated successfully.")
 
-            # Make a PUT request to update the driver's status
-            response = requests.put(url, json=update_payload, timeout=5)
-            
-            if response.status_code == 200:
-                print(f"Driver with ID {driver_id} status changed successfully.")
-            else:
-                print(
-                    f"Failed to update driver with ID {driver_id}.\n"
-                    f"Status code: {response.status_code}, Response: {response.text}\n"
-                )
-
-            # Acknowledge the message
-            # ch.basic_ack(delivery_tag=method.delivery_tag)
-
-        # incase of requests error
-        except requests.RequestException as e:
-            print(f"Network error while updating driver status: {e}")
-
-        # incase the json payload has issues
         except json.JSONDecodeError as e:
-            print(f"Failed to parse message payload: {e}")
-            # ch.basic_ack(delivery_tag=method.delivery_tag)
+            logger.error(f"Failed to parse message payload: {str(e)}")
 
-        # any other error
         except Exception as e:
-            print(f"Unexpected error: {e}")
-
+            logger.error(f"Unexpected error while handling the assignment-created message: {str(e)}")

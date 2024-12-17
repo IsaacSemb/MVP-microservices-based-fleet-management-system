@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from models import Driver
+from services.service1_driver_management.models import Driver
 from common.database.db_utils import db
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.types import Enum

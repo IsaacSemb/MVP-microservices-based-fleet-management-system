@@ -23,7 +23,7 @@ APP_PORT = os.getenv("SERVICE_1_PORT")
 
 # Import models and routes
 # from models import Driver
-from routes import driver_blueprint
+from services.service1_driver_management.routes import driver_blueprint
 
 # Create an instance of the Flask app
 app = Flask(__name__)
