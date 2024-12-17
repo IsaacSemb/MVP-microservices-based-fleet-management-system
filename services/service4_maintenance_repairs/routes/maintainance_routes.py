@@ -1,28 +1,13 @@
 from flask import Blueprint, request, jsonify, current_app
 from models import MaintenanceLog
-from shared.database.db_utils import db
-from functools import wraps
-from shared.message_broker.rabbitmq_utils import RabbitMQ
-
-
-broker = RabbitMQ()
+from common.database.db_utils import db
+from common.message_broker.rabbitmq_utils import RabbitMQ
+from common.logs.logger import logger
 
 maintenance_logs_bp = Blueprint('maintenance_logs_bp', __name__)
 
-
-def check_my_db(func):
-    """ this check for whether the database is available at the moment or not"""
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        if not current_app.config.get('DB_AVAILABLE', True):
-            return jsonify({"message": "Service unavailable due to database issues. Please try again later."}), 503
-        return func(*args, **kwargs)
-    return wrapper
-
-
 # Route to add a new maintenance log
 @maintenance_logs_bp.route('/maintenance', methods=['POST'])
-@check_my_db
 def add_maintenance_log():
     try:
         data = request.json
@@ -41,6 +26,8 @@ def add_maintenance_log():
         )
         db.session.add(new_log)
         db.session.commit()
+        
+        logger.info(f"maintenace created and wwritten to db [maintenanceID:{new_log.maintenance_id}]")
 
         # Publish to the broker
         new_maintenance_created_message = {
@@ -61,16 +48,17 @@ def add_maintenance_log():
             to see which ones the maintenance has that arent in the scheduler, we can then resend those ones !!!!!!
             """
             
+            broker = RabbitMQ()
             broker.publish_message(
-                exchange='maintenance_created_direct_exchange', 
-                exchange_type='direct',
-                routing_key='maintenance.created',
+                exchange='maintenance_created_fanout_exchange', 
+                exchange_type='fanout',
+                routing_key='',
                 message=new_maintenance_created_message
             )
             
         except Exception as broker_error:
             # Log the error and proceed without breaking the flow
-            current_app.logger.error(f"Broker publishing error: {broker_error}")
+            logger.error(f"Broker publishing error: {broker_error}")
             return jsonify({
                 "message": "Maintenance log added successfully, but failed to notify via broker.",
                 "broker_error": str(broker_error)
@@ -79,12 +67,12 @@ def add_maintenance_log():
         return jsonify({"message": "Maintenance log added successfully"}), 201
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": f"An error occurred while adding the maintenance log: {str(e)}"}), 500
+        logger.error(f"Error creating maitenanance: [{str(e)}]")        
+        return jsonify({"error": f"An error occurred while adding the maintenance log: [{str(e)}]"}), 500
 
 
 # Route to get all maintenance logs
 @maintenance_logs_bp.route('/maintenance', methods=['GET'])
-@check_my_db
 def get_maintenance_logs():
     try:
         logs = MaintenanceLog.query.all()
@@ -93,12 +81,12 @@ def get_maintenance_logs():
         return jsonify(maintenance_list), 200
     
     except Exception as e:
-        return jsonify({"error": f"An error occurred while fetching maintenance logs: {str(e)}"}), 500
+        logger.error(f"Error fetching maitenance logs: [{str(e)}]")
+        return jsonify({"error": f"An error occurred while fetching maintenance logs: [{str(e)}]"}), 500
 
 
 # Route to get a specific maintenance log
 @maintenance_logs_bp.route('/maintenance/<int:maintenance_id>', methods=['GET'])
-@check_my_db
 def get_maintenance_log(maintenance_id):
     try:
         log = MaintenanceLog.query.get(maintenance_id)
@@ -111,12 +99,12 @@ def get_maintenance_log(maintenance_id):
             return jsonify({"error": "Maintenance log not found"}), 404
         
     except Exception as e:
-        return jsonify({"error": f"An error occurred while fetching the maintenance log: {str(e)}"}), 500
+        logger.error(f"Error fetching maitenance log: [{str(e)}]")
+        return jsonify({"error": f"An error occurred while fetching the maintenance log: [{str(e)}]"}), 500
     
 
 # Route to update a specific maintenance log
 @maintenance_logs_bp.route('/maintenance/<int:maintenance_id>', methods=['PUT'])
-@check_my_db
 def update_maintenance_log(maintenance_id):
     try:
         log = MaintenanceLog.query.get(maintenance_id)
@@ -138,12 +126,12 @@ def update_maintenance_log(maintenance_id):
         return jsonify({"message": "Maintenance log updated successfully"}), 200
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": f"An error occurred while updating the maintenance log: {str(e)}"}), 500
+        logger.error(f"Error updating maitenance log: [{str(e)}]")
+        return jsonify({"error": f"An error occurred while updating the maintenance log: [{str(e)}]"}), 500
 
 
 # Route to delete a specific maintenance log
 @maintenance_logs_bp.route('/maintenance/<int:maintenance_id>', methods=['DELETE'])
-@check_my_db
 def delete_maintenance_log(maintenance_id):
     try:
         log = MaintenanceLog.query.get(maintenance_id)
@@ -156,4 +144,5 @@ def delete_maintenance_log(maintenance_id):
     
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": f"An error occurred while deleting the maintenance log: {str(e)}"}), 500
+        logger.error(f"Error deleting maitenance logs: [{str(e)}]")
+        return jsonify({"error": f"An error occurred while deleting the maintenance log: [{str(e)}]"}), 500

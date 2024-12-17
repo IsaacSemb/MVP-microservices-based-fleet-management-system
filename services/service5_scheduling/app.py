@@ -12,16 +12,15 @@ load_dotenv("../.env")
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 sys.path.append(root_path)
 
-# Import shared modules
-from shared.database.db_utils import db, init_db
+# Import common modules
+from common.database.db_utils import db, init_db
 
 # Flask application configuration
 APP_PORT = os.getenv("SERVICE_5_PORT")
 
 
 # import the models and routes
-from models import Schedule 
-from routes import schedule_bp
+from services.service5_scheduling.routes import schedule_bp
 
 # creating an instance of server
 app = Flask(__name__)
@@ -35,7 +34,7 @@ CORS(app)
 # landing page for server
 @app.route("/")
 def home():
-    return F"server listening at port {APP_PORT}!"
+    return f"server listening at port {APP_PORT}!"
 
 #route to test our database connection
 @app.route("/dbtest")
@@ -51,13 +50,8 @@ def test_db():
 # Register blueprints
 app.register_blueprint(schedule_bp)
 
-# Consumer necessities
-from shared.message_broker.consumer_manager import start_consumer_processes 
-from consumer_objects import SERVICE_5_CONSUMERS
-
 # Running the app
 if __name__ == "__main__":
-    start_consumer_processes(consumers=SERVICE_5_CONSUMERS)
     app.run(
         host=os.getenv("FLASK_HOST"),
         port=int(APP_PORT),

@@ -2,6 +2,10 @@
 import json
 import requests
 import os
+from common.logs.logger import logger
+from services.service5_scheduling.models.schedule_model import Schedule
+from services.service5_scheduling.app import app
+from common.database.db_utils import db
 
 SERVICE_5_URL = os.getenv('SERVICE_5_URL')
 
@@ -9,33 +13,29 @@ SERVICE_5_URL = os.getenv('SERVICE_5_URL')
 class Message_handler:
     """this class hold an assortment of callback functions for handling different types of messages"""
     def __init__(self):
-        self.responses = []
+        pass
 
     def default(self):
         msg = 'NOT A CONSUMER, NOTHING TO CONSUME'
         print(msg)
-        return msg
-    
-    
+        return msg    
     
     def handle_event_created(self, ch, method, properties, body):
         data = json.loads(body)
-        event_type = data["event_type"]
-        schedule_data = data["data"]
-
-
-
+        event_type = data.get('event_type')
+        logger.debug(data)
+        
+        return
+        
+        
         if event_type == "assignment_created":
-            # Add assignment to schedule
             try:
-                # Parse the message body
                 payload = json.loads(body)
                 
                 # Filter by event type
                 if payload.get('event_type') != 'assignment_created':
                     print((f"Ignoring unsupported event type: {payload.get('event_type')}"))
-                    # logging.warning(f"Ignoring unsupported event type: {payload.get('event_type')}")
-                    # ch.basic_ack(delivery_tag=method.delivery_tag)
+                    logger.warning(f"Ignoring unsupported event type: {payload.get('event_type')}")
                     return
                 
                 

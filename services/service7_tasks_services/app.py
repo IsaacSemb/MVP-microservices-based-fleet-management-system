@@ -13,7 +13,7 @@ root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 sys.path.append(root_path)
 
 # Import shared modules
-from shared.database.db_utils import db, init_db
+from common.database.db_utils import db, init_db
 
 # Flask application configuration
 APP_PORT = os.getenv("SERVICE_7_PORT")
@@ -50,13 +50,8 @@ def test_db():
 app.register_blueprint(task_blueprint)
 
 
-# Consumer necessities
-from shared.message_broker.consumer_manager import start_consumer_processes 
-from consumer_objects import SERVICE_7_CONSUMERS
-
 # Running the app
 if __name__ == "__main__":
-    start_consumer_processes(consumers=SERVICE_7_CONSUMERS)
     app.run(
         host=os.getenv("FLASK_HOST"),
         port=int(APP_PORT),

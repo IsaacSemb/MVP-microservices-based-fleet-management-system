@@ -1,7 +1,7 @@
 from sqlalchemy import Enum, DateTime
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
-from shared.database.db_utils import db
+from common.database.db_utils import db
 
 
 

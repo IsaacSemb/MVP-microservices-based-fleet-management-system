@@ -1,8 +1,14 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy.exc import SQLAlchemyError
 from models.fuel_consumption_model import FuelConsumption, db
+from common.logs.logger import logger
+from common.message_broker.rabbitmq_utils import RabbitMQ
+
 
 fuel_consumption_bp = Blueprint('fuel_consumption_bp', __name__)
+
+
+
 
 # Helper function for validating request data
 def validate_fuel_data(data, is_update=False):
@@ -20,19 +26,22 @@ def validate_fuel_data(data, is_update=False):
             return False, "Amount and cost must be numeric values."
     return True, None
 
+
 # Route to add a new fuel record
 @fuel_consumption_bp.route('/fuel', methods=['POST'])
 def add_fuel_record():
+    
     data = request.json
     if not data:
         return jsonify({"error": "Request body is missing"}), 400
 
     is_valid, error_message = validate_fuel_data(data)
+    
     if not is_valid:
         return jsonify({"error": error_message}), 400
 
     try:
-        new_record = FuelConsumption(
+        new_fuel_record = FuelConsumption(
             vehicle_id=data['vehicle_id'],
             date=data['date'],
             fuel_type=data['fuel_type'],
@@ -40,12 +49,46 @@ def add_fuel_record():
             cost=data['cost'],
             mileage=data.get('mileage')
         )
-        db.session.add(new_record)
+        db.session.add(new_fuel_record)
         db.session.commit()
+        logger.info(f"new fuel log added to db: ID:{new_fuel_record.fuel_id}")
+        
+        try:
+            # Publish to the broker
+            new_fuel_record_created_message = {
+                "event_type": "fuel_created",
+                "data": new_fuel_record.to_dict()
+            }
+            
+            # get broker
+            broker = RabbitMQ()
+            broker.publish_message(
+                exchange='fuel_record_fanout_exchange',
+                exchange_type='fanout',
+                routing_key='',
+                message=new_fuel_record_created_message
+            )
+            logger.info(f"published new fuel record: {new_fuel_record.fuel_id}")
+        except Exception as e:
+            # Log broker error
+            logger.error(f"Error publishing message to broker: {str(e)}")
+            return jsonify({"message": "fuel record created but failed to notify listeners", "fuel record": new_fuel_record.to_dict()}), 201
+
+        
+        
         return jsonify({"message": "Fuel record added successfully"}), 201
+    
     except SQLAlchemyError as e:
         db.session.rollback()
+        logger.error(f"Error creating fuel record: {str(e)}")        
         return jsonify({"error": f"Database error: {str(e)}"}), 500
+
+
+
+
+
+
+
 
 # Route to get all fuel records
 @fuel_consumption_bp.route('/fuel', methods=['GET'])
@@ -68,6 +111,7 @@ def get_fuel_records():
         ]
         return jsonify(fuel_list), 200
     except SQLAlchemyError as e:
+        logger.error(f"Database Error : {str(e)}")        
         return jsonify({"error": f"Database error: {str(e)}"}), 500
 
 # Route to get a specific fuel record
@@ -89,6 +133,7 @@ def get_fuel_record(fuel_id):
         }
         return jsonify(fuel_data), 200
     except SQLAlchemyError as e:
+        logger.error(f"Database Error : {str(e)}")        
         return jsonify({"error": f"Database error: {str(e)}"}), 500
 
 # Route to update a specific fuel record
@@ -118,6 +163,7 @@ def update_fuel_record(fuel_id):
         return jsonify({"message": "Fuel record updated successfully"}), 200
     except SQLAlchemyError as e:
         db.session.rollback()
+        logger.error(f"Database Error : {str(e)}")        
         return jsonify({"error": f"Database error: {str(e)}"}), 500
 
 # Route to delete a specific fuel record
@@ -133,4 +179,5 @@ def delete_fuel_record(fuel_id):
         return jsonify({"message": "Fuel record deleted successfully"}), 200
     except SQLAlchemyError as e:
         db.session.rollback()
+        logger.error(f"Database Error : {str(e)}")        
         return jsonify({"error": f"Database error: {str(e)}"}), 500

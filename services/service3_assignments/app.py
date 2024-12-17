@@ -14,7 +14,6 @@ sys.path.append(root_path)
 
 # Import shared modules
 from common.database.db_utils import db, init_db
-from common.logs.logger import logger
 
 
 # Flask application configuration

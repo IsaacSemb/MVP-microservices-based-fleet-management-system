@@ -1,4 +1,4 @@
-from shared.database.db_utils import db
+from common.database.db_utils import db
 
 class FuelConsumption(db.Model):
     __tablename__ = 'fuel_consumption'

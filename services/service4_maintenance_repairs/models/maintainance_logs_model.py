@@ -1,4 +1,4 @@
-from shared.database.db_utils import db
+from common.database.db_utils import db
 from sqlalchemy import Enum
 from datetime import datetime, timezone
 class MaintenanceLog(db.Model):

@@ -1,14 +1,11 @@
 
 from flask import Blueprint, jsonify, request
 from models import Task
-from shared.database.db_utils import db
+from common.database.db_utils import db
 from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime, timezone
-from shared.message_broker.rabbitmq_utils import RabbitMQ
-
-broker = RabbitMQ()
-
-
+from common.logs.logger import logger
+from common.message_broker.rabbitmq_utils import RabbitMQ
 
 
 # Creation of the blueprint for routing
@@ -33,38 +30,41 @@ def create_task():
         db.session.add(new_task)
         db.session.commit()
         
-        
-        # Publish to the broker
-        new_task_created_message = {
-            "event_type": "task_created",
-            "data": new_task.to_dict()
-        }
-        
-        #  using fanout to correct the issue
-        broker.publish_message(
-            exchange='task_created_direct_exchange', 
-            exchange_type='direct',
-            routing_key='task.created',  # in fanouts, there is not routing key
-            message=new_task_created_message
-            )
-        
-        
+        try:
+            # Publish to the broker
+            new_task_created_message = {
+                "event_type": "task_created",
+                "data": new_task.to_dict()
+            }
+            
+            #  using fanout to correct the issue
+            broker = RabbitMQ()
+            broker.publish_message(
+                exchange='task_created_fanout_exchange', 
+                exchange_type='fanout',
+                routing_key='',  # in fanouts, there is not routing key
+                message=new_task_created_message 
+                )
+        except Exception as e:
+            logger.error(f"Error publishing message to broker: {str(e)}")
+            return jsonify({"message": "task created but failed to notify listeners", "task": new_task.to_dict()}), 201
+
         return jsonify({"message": "Task created successfully!", "task": new_task.to_dict()}), 201
 
     except KeyError as e:
         db.session.rollback()
         missing_field = str(e).strip("'")
-        print(f"Missing field: {missing_field}")
+        logger.debug(f"Missing field: {missing_field}")
         return jsonify({"error": f"Missing required field: {missing_field}"}), 400
 
     except SQLAlchemyError as e:
         db.session.rollback()
-        print(f"Database error: {str(e)}")
+        logger.error(f"Database error: {str(e)}")
         return jsonify({"error": "An error occurred while saving the task to the database. Please try again."}), 500
 
     except Exception as e:
         db.session.rollback()
-        print(f"Unexpected error: {str(e)}")
+        logger.error(f"Unexpected error: {str(e)}")
         return jsonify({"error": "An unexpected error occurred. Please try again."}), 500
 
 
@@ -77,11 +77,11 @@ def get_all_tasks():
         return jsonify(task_objects), 200
 
     except SQLAlchemyError as e:
-        print(f"Database error occurred: {str(e)}")
+        logger.error(f"Database error occurred: {str(e)}")
         return jsonify({"error": "An error occurred while fetching tasks. Please try again later."}), 500
 
     except Exception as e:
-        print(f"Unexpected error occurred: {str(e)}")
+        logger.error(f"Unexpected error occurred: {str(e)}")
         return jsonify({"error": "An unexpected error occurred. Please try again later."}), 500
 
 
@@ -96,11 +96,11 @@ def get_task(task_id):
             return jsonify({"error": "Task not found"}), 404
 
     except SQLAlchemyError as e:
-        print(f"Database error occurred: {str(e)}")
+        logger.error(f"Database error occurred: {str(e)}")
         return jsonify({"error": "An error occurred while fetching the task. Please try again later."}), 500
 
     except Exception as e:
-        print(f"Unexpected error occurred: {str(e)}")
+        logger.error(f"Unexpected error occurred: {str(e)}")
         return jsonify({"error": "An unexpected error occurred. Please try again later."}), 500
 
 
@@ -112,18 +112,19 @@ def delete_task(task_id):
         if task:
             db.session.delete(task)
             db.session.commit()
+            logger.info(f"task_id:[{task_id}] has been sucessfully deleted")
             return jsonify({"message": "Task deleted successfully"}), 200
         else:
             return jsonify({"error": "Task not found"}), 404
 
     except SQLAlchemyError as e:
         db.session.rollback()
-        print(f"Database error occurred: {str(e)}")
+        logger.error(f"Database error occurred: {str(e)}")
         return jsonify({"error": "An error occurred while deleting the task. Please try again later."}), 500
 
     except Exception as e:
         db.session.rollback()
-        print(f"Unexpected error occurred: {str(e)}")
+        logger.error(f"Unexpected error occurred: {str(e)}")
         return jsonify({"error": "An unexpected error occurred. Please try again later."}), 500
 
 
@@ -147,14 +148,15 @@ def update_task(task_id):
         task.status = data.get("status", task.status)
 
         db.session.commit()
+        logger.info(f"task:[{task_id}] has been updated")
         return jsonify({"message": "Task updated successfully!", "task": task.to_dict()}), 200
 
     except SQLAlchemyError as e:
         db.session.rollback()
-        print(f"Database error occurred: {str(e)}")
+        logger.error(f"Database error occurred: {str(e)}")
         return jsonify({"error": "An error occurred while updating the task. Please try again later."}), 500
 
     except Exception as e:
         db.session.rollback()
-        print(f"Unexpected error occurred: {str(e)}")
+        logger.error(f"Unexpected error occurred: {str(e)}")
         return jsonify({"error": "An unexpected error occurred. Please try again later."}), 500

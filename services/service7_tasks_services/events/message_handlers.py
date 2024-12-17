@@ -1,7 +1,7 @@
 
 import os
-from shared.database.db_utils import db
-from shared.message_broker.rabbitmq_utils import RabbitMQ
+from common.database.db_utils import db
+from common.message_broker.rabbitmq_utils import RabbitMQ
 
 broker = RabbitMQ()
 
@@ -20,12 +20,5 @@ class Message_handler:
         print(msg)
         return msg
     
-    
-    def tasks_details_requested(self, ch, method, properties, body):
-        """
-        this call back send task details based on a task ID back to the broker
-        for whoever needs them
-        """
-        pass
     
 

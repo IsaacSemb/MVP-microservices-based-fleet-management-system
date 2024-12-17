@@ -1,10 +1,11 @@
 from flask import Blueprint, request, jsonify
-from models import Schedule
-from shared.database.db_utils import db
+from services.service5_scheduling.models import Schedule
+from common.database.db_utils import db
 import os
 import requests
-
-from shared.message_broker.rabbitmq_utils import RabbitMQ
+from sqlalchemy.exc import SQLAlchemyError
+from common.logs.logger import logger
+from common.message_broker.rabbitmq_utils import RabbitMQ
 
 broker = RabbitMQ()
 
@@ -17,51 +18,69 @@ schedule_bp = Blueprint('schedule_bp', __name__)
 # Route to create a new schedule
 @schedule_bp.route('/schedules', methods=['POST'])
 def create_schedule():
-    data = request.json
     
-    new_schedule = Schedule(
-    schedule_type_id=data.get('schedule_type_id'),
-    schedule_type=data.get('schedule_type'),
-    start_date_time=data.get('start_date_time'), 
-    end_date_time=data.get('end_date_time'),
-    expected_completion=data.get('expected_completion'),
-    status=data.get('status', 'scheduled'), 
-    description=data.get('description')
-    )
+    try:
+        data = request.json
+        
+        new_schedule = Schedule(
+        schedule_type_id=data.get('schedule_type_id'),
+        schedule_type=data.get('schedule_type'),
+        start_date_time=data.get('start_date_time'), 
+        end_date_time=data.get('end_date_time'),
+        expected_completion=data.get('expected_completion'),
+        status=data.get('status', 'scheduled'), 
+        description=data.get('description')
+        )
 
-    db.session.add(new_schedule)
-    db.session.commit()
-    return jsonify({"message": "Schedule created successfully"}), 201
+        db.session.add(new_schedule)
+        db.session.commit()
+        return jsonify({"message": "Schedule created successfully", "schedule_id": new_schedule.schedule_id}), 201
+    
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        logger.error(f"Database error : {str(e)}")
+        return jsonify({"error": "Database error", "details": str(e)}), 500
+    
+    except Exception as e:
+        logger.error(f"An unexpected error occurred : {str(e)}")
+        return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+
 
 
 # Route to get all schedules
 @schedule_bp.route('/schedules', methods=['GET'])
 def get_all_schedules():
-    schedules = Schedule.query.all()
+    try:
+        schedules = Schedule.query.all()
+        
+        if not schedules:
+            return jsonify({"message": "No schedules found"}), 404
+        
+        schedule_list = [
+            {
+                "schedule_id": schedule.schedule_id,
+                "schedule_type": schedule.schedule_type,
+                "schedule_type_id": schedule.schedule_type_id,
+                "start_date_time": str(schedule.start_date_time),
+                "end_date_time": str(schedule.end_date_time),
+                "expected_completion": str(schedule.expected_completion) if schedule.expected_completion else None,
+                "status": schedule.status,
+                "description": schedule.description
+            } for schedule in schedules
+        ]
+        
+        return jsonify(schedule_list), 200
     
-    schedule_list = [
-        {
-            "schedule_id": schedule.schedule_id,  
-            "schedule_type": schedule.schedule_type,
-            "schedule_type_id": schedule.schedule_type_id,
-            "start_date_time": str(schedule.start_date_time),  
-            "end_date_time": str(schedule.end_date_time),  
-            "expected_completion": str(schedule.expected_completion) if schedule.expected_completion else None,
-            "status": schedule.status,
-            "description": schedule.description
-        } for schedule in schedules
-    ]    
+    except SQLAlchemyError as e:
+        logger.error(f"Database error : {str(e)}")
+        return jsonify({"error": "Database error", "details": str(e)}), 500
     
-    notes = """    
-    this service contains threee other service data    
-    tasks
-    assignments
-    maitenances    
-    we need details from those services when sending them over to whoever asked for them    
-    """
-    print(schedule_list)
+    except Exception as e:
+        logger.error(f"An unexpected error occurred : {str(e)}")
+        return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+    
     # USING BROKERS POSED A SKILL ISSUE LAMAO
-    # SO WE SHALL USE APIS
+    # SO WE SHALL USE APIS --- this is so problematic, it requires 3 services no no no no no
     for schedule in schedule_list:
         try:
             if schedule["schedule_type"] == "task":                
@@ -93,52 +112,99 @@ def get_all_schedules():
     return jsonify(schedule_list), 200
 
 
+
+
+
+
+
+
+
 # Route to get a specific schedule
 @schedule_bp.route('/schedules/<int:schedule_id>', methods=['GET'])
 def get_schedule(schedule_id):
-    schedule = Schedule.query.get(schedule_id)
-    if schedule:
+    
+    try:
+        schedule = Schedule.query.get(schedule_id)
+        
+        if not schedule:
+            logger.error("Schedule not found")
+            return jsonify({"error": "Schedule not found"}), 404
+        
         schedule_data = {
             "schedule_id": schedule.schedule_id,
-            "schedule_type_id": schedule.schedule_type_id,  
+            "schedule_type_id": schedule.schedule_type_id,
             "schedule_type": schedule.schedule_type,
-            "start_date_time": str(schedule.start_date_time),  
-            "end_date_time": str(schedule.end_date_time),  
+            "start_date_time": str(schedule.start_date_time),
+            "end_date_time": str(schedule.end_date_time),
             "expected_completion": str(schedule.expected_completion) if schedule.expected_completion else None,
             "status": schedule.status,
             "description": schedule.description
         }
         return jsonify(schedule_data), 200
-    else:
-        return jsonify({"error": "Schedule not found"}), 404
+    
+    except SQLAlchemyError as e:
+        logger.error(f"Database error : {str(e)}")
+        return jsonify({"error": "Database error", "details": str(e)}), 500
+    
+    except Exception as e:
+        logger.error(f"An unexpected error occurred : {str(e)}")
+        return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+
 
 # Route to update a specific schedule
 @schedule_bp.route('/schedules/<int:schedule_id>', methods=['PUT'])
 def update_schedule(schedule_id):
-    schedule = Schedule.query.get(schedule_id)
-    if not schedule:
-        return jsonify({"error": "Schedule not found"}), 404
+    try:
+        schedule = Schedule.query.get(schedule_id)
+        if not schedule:
+            return jsonify({"error": "Schedule not found"}), 404
+        
+        # Validate request JSON
+        if not request.is_json:
+            return jsonify({"error": "Request data must be in JSON format"}), 400
+        
+        data = request.json
 
-    data = request.json
+        # Optional field updates
+        schedule.schedule_type_id = data.get('schedule_type_id', schedule.schedule_type_id)
+        schedule.schedule_type = data.get('schedule_type', schedule.schedule_type)
+        schedule.start_date_time = data.get('start_date_time', schedule.start_date_time)
+        schedule.end_date_time = data.get('end_date_time', schedule.end_date_time)
+        schedule.expected_completion = data.get('expected_completion', schedule.expected_completion)
+        schedule.status = data.get('status', schedule.status)
+        schedule.description = data.get('description', schedule.description)
+        
+        db.session.commit()
+        logger.info(f"[{schedule_id}] has been updated")
+        return jsonify({"message": "Schedule updated successfully"}), 200
     
-    # schedule.schedule_type_id = data.get('schedule_type_id', schedule.schedule_type_id) 
-    schedule.schedule_type = data.get('schedule_type', schedule.schedule_type)
-    schedule.start_date_time = data.get('start_date_time', schedule.start_date_time) 
-    schedule.end_date_time = data.get('end_date_time', schedule.end_date_time)  
-    schedule.expected_completion = data.get('expected_completion', schedule.expected_completion)  
-    schedule.status = data.get('status', schedule.status)
-    schedule.description = data.get('description', schedule.description)
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        logger.error(f"Database error : {str(e)}")
+        return jsonify({"error": "Database error", "details": str(e)}), 500
+    
+    except Exception as e:
+        logger.error(f"An unexpected error occurred : {str(e)}")
+        return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
 
-    db.session.commit()
-    return jsonify({"message": "Schedule updated successfully"}), 200
 
 # Route to delete a specific schedule
 @schedule_bp.route('/schedules/<int:schedule_id>', methods=['DELETE'])
 def delete_schedule(schedule_id):
-    schedule = Schedule.query.get(schedule_id)
-    if not schedule:
-        return jsonify({"error": "Schedule not found"}), 404
-
-    db.session.delete(schedule)
-    db.session.commit()
-    return jsonify({"message": "Schedule deleted successfully"}), 200
+    try:
+        schedule = Schedule.query.get(schedule_id)
+        if not schedule:
+            return jsonify({"error": "Schedule not found"}), 404
+        
+        db.session.delete(schedule)
+        db.session.commit()
+        return jsonify({"message": "Schedule deleted successfully"}), 200
+    
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        logger.error(f"Database error : {str(e)}")
+        return jsonify({"error": "Database error", "details": str(e)}), 500
+    
+    except Exception as e:
+        logger.error(f"An unexpected error occurred : {str(e)}")
+        return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500

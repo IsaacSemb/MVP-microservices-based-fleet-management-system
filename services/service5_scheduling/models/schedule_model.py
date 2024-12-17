@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Enum
-from shared.database.db_utils import db
+from common.database.db_utils import db
 from datetime import datetime, timezone
 
 class Schedule(db.Model):

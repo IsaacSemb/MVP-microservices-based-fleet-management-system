@@ -2,7 +2,6 @@ from flask import Blueprint, request, jsonify
 from models import Assignment
 from common.database.db_utils import db
 import os
-from services.service3_assignments.validation_and_fetch import validate_and_fetch_resource
 from common.message_broker.rabbitmq_utils import RabbitMQ
 from common.logs.logger import logger
 
@@ -69,6 +68,7 @@ def add_assignment():
         return jsonify({"message": "Assignment created successfully", "assignment": new_assignment.to_dict()}), 201
 
     except Exception as e:
+        db.session.rollback()
         logger.error(f"Error creating assignment: {str(e)}")
         return jsonify({"error": "Internal Server Error"}), 500
 

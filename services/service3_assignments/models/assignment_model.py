@@ -1,4 +1,3 @@
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Enum
 from datetime import datetime, timezone
 from common.database.db_utils import db
