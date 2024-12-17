@@ -13,6 +13,13 @@ def start_service_workers(service_consumers):
         service_consumers (list): List of consumer configurations (dictionaries).
     """
     try:
+        
+        # check if the service has workers
+        if len(service_consumers) == 0:
+            logger.info("THIS SERVICE DOESNT HAVE CONSUMERS!")
+            return
+        
+        
         # Initialize RabbitMQ object
         rabbitmq = RabbitMQ()
 
