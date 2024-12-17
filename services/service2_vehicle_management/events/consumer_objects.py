@@ -11,8 +11,19 @@ SERVICE_2_CONSUMERS = [
             "exchange": "assignment_created_fanout_exchange",
             "exchange_type": "fanout",
             "routing_key": "",
-            "handler":handler.handle_assignment_created
-            
+            "callback":handler.handle_assignment_created            
+        },
+        {
+            "queue_name":"service2_driver_created",
+            "exchange":"driver_created_fanout_exchange",
+            "exchange_type":"fanout",
+            "callback":handler.handle_driver_created
+        },
+        {
+            "queue_name":"service2_vehicle_created",
+            "exchange":"vehicle_created_fanout_exchange",
+            "exchange_type":"fanout",
+            "callback":handler.handle_vehicle_created
         }
     ]
     

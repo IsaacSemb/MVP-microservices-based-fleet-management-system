@@ -20,7 +20,7 @@ from common.logs.logger import logger
 APP_PORT = os.getenv("SERVICE_2_PORT")
 
 # model and routes
-from routes import vehicle_blueprint
+from services.service2_vehicle_management.routes import vehicle_blueprint
 
 # creating an instance of server
 app = Flask(__name__)

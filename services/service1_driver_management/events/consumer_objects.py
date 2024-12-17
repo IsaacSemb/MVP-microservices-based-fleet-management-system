@@ -14,13 +14,13 @@ SERVICE_1_CONSUMERS = [
         "callback": handler.handle_assignment_created,
     },
     {
-        "queue_name":"sample_driver_created",
+        "queue_name":"service1_driver_created",
         "exchange":"driver_created_fanout_exchange",
         "exchange_type":"fanout",
         "callback":handler.handle_driver_created
     },
     {
-        "queue_name":"sample_vehicle_created",
+        "queue_name":"service1_vehicle_created",
         "exchange":"vehicle_created_fanout_exchange",
         "exchange_type":"fanout",
         "callback":handler.handle_vehicle_created

@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from models import Vehicle
+from services.service2_vehicle_management.models import Vehicle
 from common.database.db_utils import db
 from sqlalchemy.exc import SQLAlchemyError
 from common.logs.logger import logger
