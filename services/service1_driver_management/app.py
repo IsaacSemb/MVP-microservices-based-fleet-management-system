@@ -50,13 +50,30 @@ def test_db():
         logger.warning(f"Database health check failed: {e}")
         return f"Database connection failed: {e}", 500
 
+
+print("\n\n-----------------------")
+print(os.getenv("FLASK_ENV"))
+print(os.getenv("DB_HOST"))
+print(os.getenv("DB_USER"))
+print(os.getenv("DB_PASSWORD"))
+print(os.getenv("DB_PORT"))
+print(os.getenv("FLASK_HOST"))
+print(os.getenv("SERVICE_1_PORT"))
+print(os.getenv("SERVICE_1_DB_NAME"))
+print(os.getenv("SERVICE_1_URL"))
+print('------------------------\n\n')
+
+
+
 # Register blueprints
 app.register_blueprint(driver_blueprint)
+
+print(os.getenv("DEVELOPER"))
 
 if __name__ == "__main__":
     app.run(
         host=os.getenv("FLASK_HOST"),
-        port=int(APP_PORT),
+        port=APP_PORT,
         debug=os.getenv("FLASK_ENV") == "development"
     )
  

@@ -15,11 +15,12 @@ class DatabaseConfig:
 def init_db(app, db_name=None):
     """Initialize the database with Flask app."""
     # Load default configurations from environment variables
-    username = os.getenv("DB_USER")
-    password = os.getenv("DB_PASSWORD")
-    host = os.getenv("DB_HOST")
-    port = os.getenv("DB_PORT")
-    database = db_name or os.getenv("DB_NAME")  # Use db_name if provided, otherwise default
+    host = os.getenv("DB_HOST", "localhost")
+    username = os.getenv("DB_USER", "root")
+    password = os.getenv("DB_PASSWORD", "")
+    database = os.getenv("SERVICE_1_DB_NAME", db_name)
+    port = os.getenv("DB_PORT", 3306)
+
 
     # Set database URI dynamically
     app.config["SQLALCHEMY_DATABASE_URI"] = DatabaseConfig.get_uri(username, password, host, port, database)

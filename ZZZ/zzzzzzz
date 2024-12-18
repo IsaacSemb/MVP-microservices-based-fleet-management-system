@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${SERVICE_1_DB_NAME}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    volumes:
+      - "F:/MY-SQL-CONTAINER-LOCAL-DATA:/var/lib/mysql"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+
+  driver_management:
+    build:
+      context: .
+      dockerfile: services/service1_driver_management/Dockerfile
+    container_name: driver_management_service
+    environment:
+      FLASK_ENV: ${FLASK_ENV}
+      FLASK_HOST: ${FLASK_HOST}
+      SERVICE_1_PORT: ${SERVICE_1_PORT}
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${SERVICE_1_DB_NAME}
+    ports:
+      - "${SERVICE_1_PORT}:${SERVICE_1_PORT}"
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:

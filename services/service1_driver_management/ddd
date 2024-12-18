@@ -1,0 +1,34 @@
+# Step 1: Use an official Python runtime
+FROM python:3.12-slim
+
+# Step 2: Set the working directory inside the container
+WORKDIR /app
+
+# Step 3: Install required system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libmariadb-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+# Step 4: Copy the 'common' directory into the container
+COPY ./common /app/common
+
+# Step 5: Copy only 'service1_driver_management' into its correct path
+RUN mkdir -p /app/services
+COPY ./services/service1_driver_management /app/services/service1_driver_management
+
+# Step 7: Copy requirements.txt from the project root
+COPY ./requirements.txt /app/requirements.txt
+
+# Step 8: Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Step 9: Expose the correct port (5001)
+EXPOSE 5001
+
+# Step 10: Set the working directory to service1_driver_management
+WORKDIR /app/services/service1_driver_management
+
+# Step 11: Command to run the service
+CMD ["python", "app.py"]
