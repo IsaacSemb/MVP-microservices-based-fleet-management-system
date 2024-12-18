@@ -1,3 +1,4 @@
+
 version: "3.9"
 
 services:
@@ -50,17 +51,6 @@ services:
     networks:
       - app_network
   
-  # service1_workers:
-  # build:
-  #   context: .
-  #   dockerfile: ./services/service1_driver_management/Dockerfile
-  # container_name: service1_workers
-  # command: python events/workers.py  # Run only the worker script
-  # depends_on:
-  #   - rabbitmq
-  # networks:
-  #   - app_network
-
 
   # 4. Service 1 - Driver Management
   service1_driver_management:
@@ -75,6 +65,127 @@ services:
     volumes:
       - ./services/service1_driver_management:/app/services/service1_driver_management  # Mount local code to container
       - ./common:/app/common  # Mount the shared 'common' folder
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    networks:
+      - app_network
+      
+  # Additional services: Service 2 to Service 7
+  service2_vehicle_management:
+    build:
+      context: .
+      dockerfile: ./services/service2_vehicle_management/Dockerfile
+    container_name: service2_vehicle_management
+    ports:
+      - "5002:5002"
+    env_file:
+      - .env.docker
+    volumes:
+      - ./services/service2_vehicle_management:/app/services/service2_vehicle_management
+      - ./common:/app/common
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    networks:
+      - app_network
+
+  service3_assignments:
+    build:
+      context: .
+      dockerfile: ./services/service3_assignments/Dockerfile
+    container_name: service3_assignments
+    ports:
+      - "5003:5003"
+    env_file:
+      - .env.docker
+    volumes:
+      - ./services/service3_assignments:/app/services/service3_assignments
+      - ./common:/app/common
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    networks:
+      - app_network
+
+  service4_maintenance_repairs:
+    build:
+      context: .
+      dockerfile: ./services/service4_maintenance_repairs/Dockerfile
+    container_name: service4_maintenance_repairs
+    ports:
+      - "5004:5004"
+    env_file:
+      - .env.docker
+    volumes:
+      - ./services/service4_maintenance_repairs:/app/services/service4_maintenance_repairs
+      - ./common:/app/common
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    networks:
+      - app_network
+
+  service5_scheduling:
+    build:
+      context: .
+      dockerfile: ./services/service5_scheduling/Dockerfile
+    container_name: service5_scheduling
+    ports:
+      - "5005:5005"
+    env_file:
+      - .env.docker
+    volumes:
+      - ./services/service5_scheduling:/app/services/service5_scheduling
+      - ./common:/app/common
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    networks:
+      - app_network
+
+  service6_fuel_consumption_service:
+    build:
+      context: .
+      dockerfile: ./services/service6_fuel_consumption_service/Dockerfile
+    container_name: service6_fuel_consumption_service
+    ports:
+      - "5006:5006"
+    env_file:
+      - .env.docker
+    volumes:
+      - ./services/service6_fuel_consumption_service:/app/services/service6_fuel_consumption_service
+      - ./common:/app/common
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    networks:
+      - app_network
+
+  service7_tasks_services:
+    build:
+      context: .
+      dockerfile: ./services/service7_tasks_services/Dockerfile
+    container_name: service7_tasks_services
+    ports:
+      - "5007:5007"
+    env_file:
+      - .env.docker
+    volumes:
+      - ./services/service7_tasks_services:/app/services/service7_tasks_services
+      - ./common:/app/common
     depends_on:
       mysql:
         condition: service_healthy

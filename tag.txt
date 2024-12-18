@@ -1,7 +1,0 @@
-finally something worth noting, I set up a successful Docker cluster of containers, and they run smoothly:
-1. A single service (drivers) and its worker processes (rabbitMQ consumers).
-2. SQL database container.
-3. RabbitMQ container.
-
-I set up a Docker Compose YAML file for them and kept at it until they worked.
-I am really proud and happy about this moment. When things aren't going well, I'll always look back at this moment.

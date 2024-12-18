@@ -18,7 +18,7 @@ COPY ./common /app/common
 
 # Step 5: Copy the specific service directory into its correct path
 RUN mkdir -p /app/services
-COPY ./services/service1_driver_management /app/services/service1_driver_management
+COPY ./services/service7_tasks_services /app/services/service7_tasks_services
 
 # Step 6: Copy requirements.txt from the project root
 COPY ./requirements.txt /app/requirements.txt
@@ -27,10 +27,10 @@ COPY ./requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Step 8: Expose the correct port
-EXPOSE 5001
+EXPOSE 5007
 
 # Step 9: Copy supervisor configuration
-COPY ./services/service1_driver_management/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./services/service7_tasks_services/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Step 10: Use supervisor as the entrypoint
 CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

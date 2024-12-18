@@ -1,6 +1,0 @@
-tree -I "service0_UI|docs|ideal_tree"
-
-
-
-tree -I "service0_UI|docs|ideal_tree|service0_UI|service1_driver_management|service2_vehicle_management|service3_assignments|service4_maintenance_repairs|service5_scheduling|service6_fuel_consumption_service|service7_tasks_services"
-tree -I "service0_UI|docs|ideal_tree|service0_UI|service2_vehicle_management|service3_assignments|service4_maintenance_repairs|service5_scheduling|service6_fuel_consumption_service|service7_tasks_services"
