@@ -20,11 +20,18 @@ def init_db(app, db_name=None):
     password = os.getenv("DB_PASSWORD", "")
     database = os.getenv("SERVICE_1_DB_NAME", db_name)
     port = os.getenv("DB_PORT", 3306)
+    
+    
+    if not database:
+        logger.error("Database name is not provided. Check environment variables or db_name argument.")
+        return
 
 
     # Set database URI dynamically
     app.config["SQLALCHEMY_DATABASE_URI"] = DatabaseConfig.get_uri(username, password, host, port, database)
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    
+    logger.info(f"Connecting to database: {database} at {host}:{port}")
     
     try:
         db.init_app(app)

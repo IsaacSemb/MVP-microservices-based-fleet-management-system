@@ -10,7 +10,7 @@ load_dotenv("../.env")
 
 # Add the root directory to sys.path
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
-sys.path.append(root_path)
+sys.path.append(root_path) 
 
 # Import common modules
 from common.database.db_utils import db, init_db
