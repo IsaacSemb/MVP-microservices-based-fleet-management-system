@@ -8,7 +8,7 @@ services:
     container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: 1234
-      # MYSQL_DATABASE: driver_management
+      # MYSQL_DATABASE: driver_management # defalut database
     ports:
       - "3306:3306"
     healthcheck:  # Ensures MySQL is fully ready
@@ -64,7 +64,7 @@ services:
     env_file:
       - .env.docker
     environment:
-      # DB_NAME: ${SERVICE_1_DB_NAME}  # Override DB_NAME
+      SERVICE_1_DB_NAME: ${SERVICE_1_DB_NAME}
     volumes:
       - ./services/service1_driver_management:/app/services/service1_driver_management  # Mount local code to container
       - ./common:/app/common  # Mount the shared 'common' folder
@@ -87,7 +87,7 @@ services:
     env_file:
       - .env.docker
     environment:
-      # DB_NAME: ${SERVICE_2_DB_NAME}
+      SERVICE_2_DB_NAME: ${SERVICE_2_DB_NAME}
     volumes:
       - ./services/service2_vehicle_management:/app/services/service2_vehicle_management
       - ./common:/app/common
@@ -98,7 +98,6 @@ services:
         condition: service_started
     networks:
       - app_network
-
   service3_assignments:
     build:
       context: .
@@ -109,7 +108,7 @@ services:
     env_file:
       - .env.docker
     environment:
-      # DB_NAME: ${SERVICE_3_DB_NAME}
+      SERVICE_3_DB_NAME: ${SERVICE_3_DB_NAME}
     volumes:
       - ./services/service3_assignments:/app/services/service3_assignments
       - ./common:/app/common
@@ -131,7 +130,8 @@ services:
     env_file:
       - .env.docker
     environment:
-      # DB_NAME: ${SERVICE_4_DB_NAME}
+      SERVICE_4_DB_NAME: maintenance # this is weird, you cant pull it from env and i dont know whyyyyyyyy ${SERVICE_4_DB_NAME}  -- doesnt work
+
     volumes:
       - ./services/service4_maintenance_repairs:/app/services/service4_maintenance_repairs
       - ./common:/app/common
@@ -153,7 +153,7 @@ services:
     env_file:
       - .env.docker
     environment:
-      # DB_NAME: ${SERVICE_5_DB_NAME}
+      SERVICE_5_DB_NAME: ${SERVICE_5_DB_NAME}
     volumes:
       - ./services/service5_scheduling:/app/services/service5_scheduling
       - ./common:/app/common
@@ -175,7 +175,7 @@ services:
     env_file:
       - .env.docker
     environment:
-      # DB_NAME: ${SERVICE_6_DB_NAME}
+      SERVICE_6_DB_NAME: ${SERVICE_6_DB_NAME}
     volumes:
       - ./services/service6_fuel_consumption_service:/app/services/service6_fuel_consumption_service
       - ./common:/app/common
@@ -197,7 +197,7 @@ services:
     env_file:
       - .env.docker
     environment:
-      # DB_NAME: ${SERVICE_7_DB_NAME}
+      SERVICE_7_DB_NAME: ${SERVICE_7_DB_NAME}
     volumes:
       - ./services/service7_tasks_services:/app/services/service7_tasks_services
       - ./common:/app/common

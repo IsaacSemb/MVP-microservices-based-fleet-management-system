@@ -12,15 +12,16 @@ class DatabaseConfig:
     def get_uri(username, password, host, port, database):
         return f"mysql+pymysql://{username}:{password}@{host}:{port}/{database}"
 
-def init_db(app, db_name=None):
+def init_db(app, db_name=None): 
     """Initialize the database with Flask app."""
     # Load default configurations from environment variables
     host = os.getenv("DB_HOST", "localhost")
     username = os.getenv("DB_USER", "root")
     password = os.getenv("DB_PASSWORD", "")
-    database = os.getenv("SERVICE_1_DB_NAME", db_name)
+    database = db_name
     port = os.getenv("DB_PORT", 3306)
     
+    print("----------###########",database)
     
     if not database:
         logger.error("Database name is not provided. Check environment variables or db_name argument.")

@@ -1,0 +1,85 @@
+
+version: "3.9"
+
+services:
+  # 1. MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      # MYSQL_DATABASE: driver_management
+    ports:
+      - "3306:3306"
+    healthcheck:  # Ensures MySQL is fully ready
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1234"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db_creator:/docker-entrypoint-initdb.d
+    networks:
+      - app_network
+
+  # 2. phpMyAdmin GUI
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: 1234
+    ports:
+      - "8080:80"  # Accessible at http://localhost:8080
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - app_network
+
+  # 3. RabbitMQ Broker
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    env_file:
+      - .env.docker
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"   # AMQP port
+      - "15672:15672" # Management UI: http://localhost:15672
+    networks:
+      - app_network
+
+  service2_vehicle_management:
+    build:
+      context: .
+      dockerfile: ./services/service2_vehicle_management/Dockerfile
+    container_name: service2_vehicle_management
+    ports:
+      - "5002:5002"
+    env_file:
+      - .env.docker
+    environment:
+      SERVICE_2_DB_NAME: ${SERVICE_2_DB_NAME}
+    volumes:
+      - ./services/service2_vehicle_management:/app/services/service2_vehicle_management
+      - ./common:/app/common
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local

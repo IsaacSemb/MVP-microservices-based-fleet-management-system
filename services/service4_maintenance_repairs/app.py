@@ -3,7 +3,7 @@ from sqlalchemy import text
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
-import sys
+import sys 
 
 # Load global environment variables
 load_dotenv("../.env")
@@ -12,7 +12,7 @@ load_dotenv("../.env")
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 sys.path.append(root_path)
 
-# Import shared modules
+# Import shared modules 
 from common.database.db_utils import db, init_db
 from common.logs.logger import logger
 
@@ -27,6 +27,7 @@ app = Flask(__name__)
 
 # Dynamically initialize the database with service db name
 SERVICE_4_DB_NAME = os.getenv("SERVICE_4_DB_NAME")
+print(SERVICE_4_DB_NAME,"################__________")
 init_db(app, db_name=SERVICE_4_DB_NAME)
 CORS(app)
 
