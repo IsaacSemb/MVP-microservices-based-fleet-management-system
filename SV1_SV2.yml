@@ -1,4 +1,8 @@
 
+# docker command
+# docker-compose -f SV1_SV2.yml --project-name SV1_SV2 up --build
+
+
 version: "3.9"
 
 services:
@@ -8,7 +12,7 @@ services:
     container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: 1234
-      # MYSQL_DATABASE: driver_management
+      # MYSQL_DATABASE: driver_management # defalut database
     ports:
       - "3306:3306"
     healthcheck:  # Ensures MySQL is fully ready
@@ -43,8 +47,6 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
-    env_file:
-      - .env.docker
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
@@ -53,7 +55,62 @@ services:
       - "15672:15672" # Management UI: http://localhost:15672
     networks:
       - app_network
+  
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  # 4. Service 1 - Driver Management
+  service1_driver_management:
+    build:
+      context: .
+      dockerfile: ./services/service1_driver_management/Dockerfile
+    container_name: service1_driver_management
+    ports:
+      - "5001:5001"
+    env_file:
+      - .env.docker
+    environment:
+      SERVICE_1_DB_NAME: ${SERVICE_1_DB_NAME}
+    volumes:
+      - ./services/service1_driver_management:/app/services/service1_driver_management  # Mount local code to container
+      - ./common:/app/common  # Mount the shared 'common' folder
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    networks:
+      - app_network
+
+
+
+
+
+      
+  # Additional services: Service 2 to Service 7
   service2_vehicle_management:
     build:
       context: .
@@ -75,6 +132,39 @@ services:
         condition: service_started
     networks:
       - app_network
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 networks:
   app_network:

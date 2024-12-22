@@ -53,7 +53,7 @@ def create_driver():
                 routing_key='',
                 message=new_driver_created_message
             )
-            logger.info(f"published new driver: {new_driver.driver_id}")
+            logger.info(f"published new driver: {new_driver_created_message}")
         except Exception as e:
             # Log broker error
             logger.error(f"Error publishing message to broker: {str(e)}")

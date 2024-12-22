@@ -1,8 +1,6 @@
 import json
 import os
 from common.logs.logger import logger
-from services.service2_vehicle_management.models.vehicle_model import Vehicle
-from services.service2_vehicle_management.app import app
 from common.database.db_utils import db
 
 
