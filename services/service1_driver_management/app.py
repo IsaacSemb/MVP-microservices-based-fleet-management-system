@@ -51,17 +51,17 @@ def test_db():
         return f"Database connection failed: {e}", 500
 
 
-print("\n\n-----------------------")
-print(os.getenv("FLASK_ENV"))
-print(os.getenv("DB_HOST"))
-print(os.getenv("DB_USER"))
-print(os.getenv("DB_PASSWORD"))
-print(os.getenv("DB_PORT"))
-print(os.getenv("FLASK_HOST"))
-print(os.getenv("SERVICE_1_PORT"))
-print(os.getenv("SERVICE_1_DB_NAME"))
-print(os.getenv("SERVICE_1_URL"))
-print('------------------------\n\n')
+# print("\n\n-----------------------")
+# print(os.getenv("FLASK_ENV"))
+# print(os.getenv("DB_HOST"))
+# print(os.getenv("DB_USER"))
+# print(os.getenv("DB_PASSWORD"))
+# print(os.getenv("DB_PORT"))
+# print(os.getenv("FLASK_HOST"))
+# print(os.getenv("SERVICE_1_PORT"))
+# print(os.getenv("SERVICE_1_DB_NAME"))
+# print(os.getenv("SERVICE_1_URL"))
+# print('------------------------\n\n')
 
 
 

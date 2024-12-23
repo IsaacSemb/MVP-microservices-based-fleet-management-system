@@ -84,7 +84,7 @@ def bulk_insert(app, model, filepath, number_of_entries=1000):
 
             # Limit number of entries to 1000
             if number_of_entries >= len(data_list):
-                number_of_entries = len(data_list) - 1 
+                number_of_entries = len(data_list)
             
                 
             

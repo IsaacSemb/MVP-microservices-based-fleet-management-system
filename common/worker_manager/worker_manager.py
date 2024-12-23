@@ -19,7 +19,7 @@ def start_service_workers(service_consumers):
             # Check if the service has workers
             while len(service_consumers) == 0:
                 logger.info("NO CONSUMERS FOUND! Retrying in 60 seconds...")
-                time.sleep(60)  # Wait before checking again
+                time.sleep(180)  # Wait before checking again
                 continue
             
             

@@ -1,6 +1,40 @@
-[{"assignment_id": 1,"driver_id": 1,"vehicle_id": 3,"start_date_time": "2024-11-01T08:00:00","end_date_time": "2024-11-10T18:00:00","status": "completed"},
-{ "assignment_id": 2, "driver_id": 2, "vehicle_id": 5, "start_date_time": "2024-11-15T09:00:00", "end_date_time": null, "status": "active"},
-{ "assignment_id": 3, "driver_id": 3, "vehicle_id": 7, "start_date_time": "2024-10-20T10:30:00", "end_date_time": "2024-10-30T17:00:00", "status": "completed"},
-{ "assignment_id": 4, "driver_id": 4, "vehicle_id": 8, "start_date_time": "2024-11-25T14:00:00", "end_date_time": null},
-{ "assignment_id": 5, "driver_id": 5, "vehicle_id": 2, "end_date_time": "2024-12-01T16:00:00", "status": "completed"}]
-  
+[
+  {
+    "assignment_id": 1,
+    "driver_id": 1,
+    "vehicle_id": 3,
+    "start_date_time": "2024-11-01T08:00:00",
+    "end_date_time": "2024-11-10T18:00:00",
+    "status": "completed"
+  },
+  {
+    "assignment_id": 2,
+    "driver_id": 2,
+    "vehicle_id": 5,
+    "start_date_time": "2024-11-15T09:00:00",
+    "end_date_time": null,
+    "status": "active"
+  },
+  {
+    "assignment_id": 3,
+    "driver_id": 3,
+    "vehicle_id": 7,
+    "start_date_time": "2024-10-20T10:30:00",
+    "end_date_time": "2024-10-30T17:00:00",
+    "status": "completed"
+  },
+  {
+    "assignment_id": 4,
+    "driver_id": 4,
+    "vehicle_id": 8,
+    "start_date_time": "2024-11-25T14:00:00",
+    "end_date_time": null
+  },
+  {
+    "assignment_id": 5,
+    "driver_id": 5,
+    "vehicle_id": 2,
+    "end_date_time": "2024-12-01T16:00:00",
+    "status": "completed"
+  }
+]
