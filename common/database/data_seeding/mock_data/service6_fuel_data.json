@@ -1,0 +1,29 @@
+[
+  {
+    "fuel_id": 1,
+    "vehicle_id": 3,
+    "date": "2024-11-27",
+    "fuel_type": "petrol",
+    "amount": 50.50,
+    "cost": 100.25,
+    "mileage": null
+  },
+  {
+    "fuel_id": 2,
+    "vehicle_id": 1,
+    "date": "2024-12-03",
+    "fuel_type": "diesel",
+    "amount": 70.00,
+    "cost": 75.75,
+    "mileage": null
+  },
+  {
+    "fuel_id": 3,
+    "vehicle_id": 4,
+    "date": "2024-12-17",
+    "fuel_type": "petrol",
+    "amount": 95.00,
+    "cost": 80.00,
+    "mileage": 25750
+  }
+]

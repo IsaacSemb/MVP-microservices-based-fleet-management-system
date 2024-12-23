@@ -18,11 +18,10 @@ from common.database.db_utils import db, init_db
 # Flask application configuration
 APP_PORT = os.getenv("SERVICE_6_PORT")
 
-# import the models 
-from models import FuelConsumption 
+
 
 # importing the routes
-from routes import fuel_consumption_bp
+from services.service6_fuel_consumption_service.routes import fuel_consumption_bp
 
 # creating an instance of server
 app = Flask(__name__)

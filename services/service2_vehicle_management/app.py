@@ -1,6 +1,6 @@
 from flask import Flask
 from sqlalchemy import text
-from flask_cors import CORS
+from flask_cors import CORS 
 from dotenv import load_dotenv
 import os
 import sys
@@ -13,8 +13,8 @@ root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 sys.path.append(root_path)
 
 # Import common modules
-from common.database.db_utils import db, init_db
-from common.logs.logger import logger
+from common.database.db_utils import db, init_db 
+from common.logs.logger import logger 
 
 # Flask application configuration
 APP_PORT = os.getenv("SERVICE_2_PORT")

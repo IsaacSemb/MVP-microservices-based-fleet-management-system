@@ -19,8 +19,7 @@ from common.database.db_utils import db, init_db
 APP_PORT = os.getenv("SERVICE_7_PORT")
 
 # import the models and routes
-from models import Task
-from routes import task_blueprint
+from services.service7_tasks_services.routes import task_blueprint
 
 # creating an instance of server
 app = Flask(__name__)

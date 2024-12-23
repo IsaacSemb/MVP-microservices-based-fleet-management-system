@@ -20,7 +20,7 @@ from common.logs.logger import logger
 APP_PORT = os.getenv("SERVICE_4_PORT")
 
 # import the models and routes
-from routes import maintenance_logs_bp
+from services.service4_maintenance_repairs.routes import maintenance_logs_bp
 
 # creating an instance of server
 app = Flask(__name__)

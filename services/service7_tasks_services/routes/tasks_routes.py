@@ -1,6 +1,6 @@
 
 from flask import Blueprint, jsonify, request
-from models import Task
+from services.service7_tasks_services.models import Task
 from common.database.db_utils import db
 from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime, timezone

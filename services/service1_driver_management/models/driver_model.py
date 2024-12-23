@@ -11,9 +11,20 @@ class Driver(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     license_no = db.Column(db.String(50), unique=True, nullable=False)
     contact_info = db.Column(db.String(100), nullable=False)
-    sex = db.Column(db.String(10), nullable=False)
-    status = db.Column(Enum('available', 'assigned', 'active', 'unavailable', name='driver_status'), nullable=False, default='available')
+    
+    # Updated sex column with Enum for Male and Female
+    sex = db.Column(
+        Enum('Male', 'Female', name='gender_enum'),
+        nullable=False
+    )
 
+    # Status Enum
+    status = db.Column(
+        Enum('available', 'assigned', 'active', 'unavailable', name='driver_status'),
+        nullable=False,
+        default='available'
+    )
+    
     """ 
     to fix values to a predetermined set
     we use the enum function

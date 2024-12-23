@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy.exc import SQLAlchemyError
-from models.fuel_consumption_model import FuelConsumption, db
+from services.service6_fuel_consumption_service.models.fuel_consumption_model import FuelConsumption, db
 from common.logs.logger import logger
 from common.message_broker.rabbitmq_utils import RabbitMQ
 

@@ -1,6 +1,6 @@
 from flask import Flask
 from sqlalchemy import text
-from flask_cors import CORS
+from flask_cors import CORS  
 from dotenv import load_dotenv
 import os
 import sys
@@ -18,18 +18,18 @@ from common.logs.logger import logger
 
 
 # Flask application configuration
-APP_PORT = os.getenv("SERVICE_1_PORT")
+APP_PORT = os.getenv("SERVICE_1_PORT") 
 
 
 # Import models and routes
 # from models import Driver
-from services.service1_driver_management.routes import driver_blueprint
+from services.service1_driver_management.routes import driver_blueprint 
 
 # Create an instance of the Flask app
 app = Flask(__name__)
 
 # Dynamically initialize the database with service db name
-SERVICE_1_DB_NAME = os.getenv("SERVICE_1_DB_NAME")
+SERVICE_1_DB_NAME = os.getenv("SERVICE_1_DB_NAME") 
 init_db(app, db_name=SERVICE_1_DB_NAME)
 CORS(app)
 

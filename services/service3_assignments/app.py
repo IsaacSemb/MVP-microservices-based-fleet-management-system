@@ -21,7 +21,7 @@ APP_PORT = os.getenv("SERVICE_3_PORT")
 
 
 # importing the routes
-from routes import assignment_bp
+from services.service3_assignments.routes import assignment_bp
 
 # creating an instance of server
 app = Flask(__name__) 

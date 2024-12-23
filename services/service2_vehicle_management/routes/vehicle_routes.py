@@ -20,8 +20,12 @@ def register_vehicle():
             vehicle_type=data["vehicle_type"],
             status=data["status"]
         )
-        # db.session.add(new_vehicle)
-        # db.session.commit()
+        
+        # add the vehicle to the database
+        db.session.add(new_vehicle)
+        
+        # commit the transaction
+        db.session.commit()
         
         logger.info(f"new vehicle added to the database: [vehicle_plate:{new_vehicle.reg_no}]")
         
@@ -40,7 +44,9 @@ def register_vehicle():
                 routing_key='',
                 message=new_vehicle_created_message
             )
+            
             logger.info(f"published new vehicle: {new_vehicle.vehicle_id}")
+            
         except Exception as e:
             # Log broker error
             logger.error(f"Error publishing message to broker: {str(e)}")

@@ -9,10 +9,25 @@ class Vehicle(db.Model):
     make = db.Column(db.String(50), nullable=False)
     model = db.Column(db.String(50), nullable=False)
     reg_no = db.Column(db.String(20), unique=True, nullable=False)
-    fuel_type = db.Column(db.String(20), nullable=False)
-    vehicle_type = db.Column(db.String(50), nullable=False)
-    status = db.Column( Enum('available', 'assigned', 'service', 'on_leave', name='vehicle_status'), nullable=False, default='available')
-
+    
+    fuel_type = db.Column(
+        Enum('petrol', 'diesel', 'electric', 'hybrid', 'not_specified', name='fuel_type_enum'), 
+        nullable=False, 
+        default='not_specified'
+    )
+    
+    vehicle_type = db.Column(
+        Enum('car', 'truck', 'van', 'bus', 'not_specified', name='vehicle_type_enum'), 
+        nullable=False, 
+        default='not_specified'
+    )
+    
+    status = db.Column(
+        Enum('available', 'assigned', 'service', 'on_leave', name='vehicle_status'), 
+        nullable=False, 
+        default='available'
+    )
+    
     def __init__(self, make, model, reg_no, fuel_type, vehicle_type, status='available'):
         self.make = make
         self.model = model

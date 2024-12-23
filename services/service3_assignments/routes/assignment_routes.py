@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models import Assignment
+from services.service3_assignments.models import Assignment
 from common.database.db_utils import db
 import os
 from common.message_broker.rabbitmq_utils import RabbitMQ

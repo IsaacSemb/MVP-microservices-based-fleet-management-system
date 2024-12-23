@@ -28,13 +28,12 @@ def create_driver():
         )
 
         # Add the new driver to the database session
-        # db.session.add(new_driver)
+        db.session.add(new_driver)
 
         # Commit the transaction
-        # db.session.commit()
+        db.session.commit()
         
-        logger.info("new driver created")
-        logger.info(new_driver)
+        logger.info(f"new driver created:{new_driver}")
         
         # send to to broker
         try:
