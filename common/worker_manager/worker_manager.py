@@ -9,23 +9,19 @@ import time
 def start_service_workers(service_consumers):
     """
     Starts the workers for the given list of consumers.
-
     Args:
         service_consumers (list): List of consumer configurations (dictionaries).
     """
     try:
-        
-        while True:
-            # Check if the service has workers
+        while True: # Check if the service has workers
             while len(service_consumers) == 0:
                 logger.info("NO CONSUMERS FOUND! Retrying in 60 seconds...")
                 time.sleep(180)  # Wait before checking again
                 continue
             
-            
             # Initialize RabbitMQ object
             rabbitmq = RabbitMQ()
-
+            
             # Convert consumer configurations into ConsumerConfig objects
             consumers = [
                 ConsumerConfig(

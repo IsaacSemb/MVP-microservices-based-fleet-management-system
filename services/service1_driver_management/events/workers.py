@@ -10,3 +10,9 @@ from consumer_objects import SERVICE_1_CONSUMERS  # Import your service-specific
 
 if __name__ == '__main__':
     start_service_workers(SERVICE_1_CONSUMERS)
+
+
+
+
+
+

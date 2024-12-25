@@ -61,7 +61,7 @@ def get_all_schedules():
                 "schedule_id": schedule.schedule_id,
                 "schedule_type": schedule.schedule_type,
                 "schedule_type_id": schedule.schedule_type_id,
-                "start_date_time": str(schedule.start_date_time),
+                "start_date_time": str(schedule.start_date_time), 
                 "end_date_time": str(schedule.end_date_time),
                 "expected_completion": str(schedule.expected_completion) if schedule.expected_completion else None,
                 "status": schedule.status,

@@ -3,7 +3,7 @@ import subprocess, sys
 
 services = [
     "seed_database_1.py",
-    # "seed_database_2.py",
+    "seed_database_2.py",
     # "seed_database_3.py",
     # "seed_database_4.py",
     # "seed_database_5.py",

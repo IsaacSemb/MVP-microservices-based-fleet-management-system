@@ -4,10 +4,10 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 import sys
-
+ 
 # Load global environment variables
 load_dotenv("../.env")
-
+ 
 # Add the root directory to sys.path
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 sys.path.append(root_path) 
@@ -49,20 +49,6 @@ def test_db():
     except Exception as e:
         logger.warning(f"Database health check failed: {e}")
         return f"Database connection failed: {e}", 500
-
-
-# print("\n\n-----------------------")
-# print(os.getenv("FLASK_ENV"))
-# print(os.getenv("DB_HOST"))
-# print(os.getenv("DB_USER"))
-# print(os.getenv("DB_PASSWORD"))
-# print(os.getenv("DB_PORT"))
-# print(os.getenv("FLASK_HOST"))
-# print(os.getenv("SERVICE_1_PORT"))
-# print(os.getenv("SERVICE_1_DB_NAME"))
-# print(os.getenv("SERVICE_1_URL"))
-# print('------------------------\n\n')
-
 
 
 # Register blueprints

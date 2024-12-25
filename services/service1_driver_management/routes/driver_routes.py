@@ -24,7 +24,7 @@ def create_driver():
             sex=data["sex"],
             license_no=data["license_no"],
             contact_info=data["contact_info"],
-            status=data.get('status', 'available')  # Default to 'available' if not provided
+            status=data.get('status', 'available')
         )
 
         # Add the new driver to the database session
@@ -53,6 +53,8 @@ def create_driver():
                 message=new_driver_created_message
             )
             logger.info(f"published new driver: {new_driver_created_message}")
+            
+            
         except Exception as e:
             # Log broker error
             logger.error(f"Error publishing message to broker: {str(e)}")

@@ -23,11 +23,9 @@ class Message_handler:
     
     def handle_driver_created(self, ch, method, properties, body):
         logger.info(body)
-        
-    
+            
     def handle_vehicle_created(self, ch, method, properties, body):
         logger.info(body)
-
             
     def handle_assignment_created(self, ch, method, properties, body):
         """

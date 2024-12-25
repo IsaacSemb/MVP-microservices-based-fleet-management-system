@@ -56,7 +56,6 @@ class RabbitMQ:
                 connection.close()
                 logger.info(f"Connection closed for queue '{queue_name}'")
 
-
     def publish_message(self, exchange, routing_key, message, exchange_type="direct"):
         """Publish a message to an exchange."""
         try:
