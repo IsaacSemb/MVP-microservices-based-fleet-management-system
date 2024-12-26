@@ -1,0 +1,224 @@
+{
+    "events_flow": [
+        {
+            "producer": "service1_driver_management",
+            "events": [
+                {
+                    "event_name": "new_driver_created",
+                    "exchange_name": "driver_created_fanout_exchange",
+                    "exchange_type": "fanout",
+                    "event_consumers": [
+                        {
+                            "consumer_name": "service1_driver_management",
+                            "queue_name": "service1_driver_created_queue",
+                            "handler": {
+                                "handler_name": "handle_driver_created",
+                                "description": "log_message"
+                            }
+                        },
+                        {
+                            "consumer_name": "service2_vehicle_management",
+                            "queue_name": "service2_driver_created_queue",
+                            "handler": {
+                                "handler_name": "handle_driver_created",
+                                "description": "log_message"
+                            }
+                        },
+                        {
+                            "consumer_name": "service3_assignment",
+                            "queue_name": "service3_driver_created_queue",
+                            "handler": {
+                                "handler_name": "handle_driver_created",
+                                "description": "log_message"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "producer": "service2_vehicle_management",
+            "events": [
+                {
+                    "event_name": "new_vehicle_created",
+                    "exchange_name": "vehicle_created_fanout_exchange",
+                    "exchange_type": "fanout",
+                    "event_consumers": [
+                        {
+                            "consumer_name": "service1_driver_management",
+                            "queue_name": "service1_vehicle_created_queue",
+                            "handler": {
+                                "handler_name": "handle_vehicle_created",
+                                "description": "log_message"
+                            }
+                        },
+                        {
+                            "consumer_name": "service2_vehicle_management",
+                            "queue_name": "service2_vehicle_created_queue",
+                            "handler": {
+                                "handler_name": "handle_vehicle_created",
+                                "description": "log_message"
+                            }
+                        },
+                        {
+                            "consumer_name": "service3_assignment",
+                            "queue_name": "service3_vehicle_created_queue",
+                            "handler": {
+                                "handler_name": "handle_vehicle_created",
+                                "description": "log_message"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "producer": "service3_assignment",
+            "events": [
+                {
+                    "event_name": "new_assignment_created",
+                    "exchange_name": "assignment_created_fanout_exchange",
+                    "exchange_type": "fanout",
+                    "event_consumers": [
+                        {
+                            "consumer_name": "service1_driver_management",
+                            "queue_name": "service1_assignment_created_queue",
+                            "handler": {
+                                "handler_name": "handle_assignment_created",
+                                "description": "Update driver status to 'assigned'",
+                                "queries": [
+                                    {
+                                        "question": "How to handle future assignments (e.g., 2 days or months ahead)?",
+                                        "solution": "Use a scheduler (e.g., cron job or delayed queue) to trigger updates when the assignment date is reached."
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "consumer_name": "service2_vehicle_management",
+                            "queue_name": "service2_assignment_created_queue",
+                            "handler": {
+                                "handler_name": "handle_assignment_created",
+                                "description": "Update vehicle status to 'assigned'",
+                                "queries": [
+                                    {
+                                        "question": "How to handle future assignments (e.g., 2 days or months ahead)?",
+                                        "solution": "Use a scheduler (e.g., cron job or delayed queue) to trigger updates when the assignment date is reached."
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "consumer_name": "service3_assignment",
+                            "queue_name": "service3_assignment_created_queue",
+                            "handler": {
+                                "handler_name": "handle_assignment_created",
+                                "description": "log_message"
+                            }
+                        },
+                        {
+                            "consumer_name": "service5_scheduling",
+                            "queue_name": "service5_assignment_created_queue",
+                            "handler": {
+                                "handler_name": "handle_event_created",
+                                "description": "Add assignment details (ID, dates, description) to the service database."
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "producer": "service4_maintenance_management",
+            "events": [
+                {
+                    "event_name": "new_maintenance_record_created",
+                    "exchange_name": "maintenance_created_fanout_exchange",
+                    "exchange_type": "fanout",
+                    "event_consumers": [
+                        {
+                            "consumer_name": "service2_vehicle_management",
+                            "queue_name": "service2_maintenance_created_queue",
+                            "handler": {
+                                "handler_name": "handle_maintenance_created",
+                                "description": "Update vehicle status to \"service\"",
+                                "queries": [
+                                    {
+                                        "question": "How to handle future maintenance (e.g., 2 days or months ahead)?",
+                                        "solution": "Use a scheduler (e.g., cron job or delayed queue) to trigger updates when the maintenance date is reached."
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "consumer_name": "service5_scheduling",
+                            "queue_name": "service5_maintenance_created_queue",
+                            "handler": {
+                                "handler_name": "handle_maintenance_created",
+                                "description": "Add maintenance record to the database (reference only ID and period dates).",
+                                "queries": [
+                                    {
+                                        "question": "How to avoid redundancy while ensuring efficient timeline retrieval?",
+                                        "solution": "Store references in the main database but use indexing or caching to speed up timeline reconstruction."
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "producer": "service6_fuel_consumption",
+            "events": [
+                {
+                    "event_name": "new_fuel_record_created",
+                    "exchange_name": "fuel_created_fanout_exchange",
+                    "exchange_type": "fanout",
+                    "event_consumers": [
+                        {
+                            "consumer_name": "service5_scheduling",
+                            "queue_name": "service5_fuel_created_queue",
+                            "handler": {
+                                "handler_name": "handle_event_created",
+                                "description": "Add this event to the database",
+                                "queries": [
+                                    {
+                                        "question": "How to handle future fueling (e.g., 2 days or months ahead)?",
+                                        "solution": "Use a scheduler (e.g., cron job or delayed queue) to trigger updates when the maintenance date is reached."
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "producer": "service7_task",
+            "events": [
+                {
+                    "event_name": "new_task_created",
+                    "exchange_name": "task_created_fanout_exchange",
+                    "exchange_type": "fanout",
+                    "event_consumers": [
+                        {
+                            "consumer_name": "service5_scheduling",
+                            "queue_name": "service5_task_created_queue",
+                            "handler": {
+                                "handler_name": "handle_event_created",
+                                "description": "Add this event to the database",
+                                "queries": [
+                                    {
+                                        "question": "How to handle future fueling (e.g., 2 days or months ahead)?",
+                                        "solution": "Use a scheduler (e.g., cron job or delayed queue) to trigger updates when the fuel date is reached."
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

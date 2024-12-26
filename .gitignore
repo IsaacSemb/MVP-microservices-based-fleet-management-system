@@ -3,6 +3,7 @@ API_gateway
 0000_LEARNINGS
 ZZZ
 docs
+learning_tests
 
 # Virtual environments
 *.venv*/

@@ -6,7 +6,7 @@ import os
 import sys
  
 # Load global environment variables
-load_dotenv("../.env")
+load_dotenv("../.env") 
  
 # Add the root directory to sys.path
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))

@@ -42,7 +42,7 @@ def send_post_requests(data_list, url):
             print(f"Request {i+1}: An error occurred: {e}")
         
         # Limit requests 
-        if i == 3:  
+        if i == 1:  
             break
 
     print(f"Total time for sending {i+1} requests: {total_time:.4f} seconds")
