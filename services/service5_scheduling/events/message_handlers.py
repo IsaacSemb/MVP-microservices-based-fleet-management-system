@@ -7,8 +7,6 @@ from services.service5_scheduling.models.schedule_model import Schedule
 from services.service5_scheduling.app import app
 from common.database.db_utils import db
 
-SERVICE_5_URL = os.getenv('SERVICE_5_URL')
-
 
 class Message_handler:
     """this class hold an assortment of callback functions for handling different types of messages"""
@@ -23,17 +21,15 @@ class Message_handler:
     def handle_event_created(self, ch, method, properties, body):
         data = json.loads(body)
         event_type = data.get('event_type')
-        logger.debug(data)
-        
-        return
+        # logger.info(data)
         
         
-        if event_type == "assignment_created":
+        if event_type == "new_assignment_created":
             try:
                 payload = json.loads(body)
                 
                 # Filter by event type
-                if payload.get('event_type') != 'assignment_created':
+                if payload.get('event_type') != 'new_assignment_created':
                     print((f"Ignoring unsupported event type: {payload.get('event_type')}"))
                     logger.warning(f"Ignoring unsupported event type: {payload.get('event_type')}")
                     return
@@ -45,49 +41,18 @@ class Message_handler:
                 # extract the assignment id from the data
                 assignment_id = data.get('assignment_id')
                 
-                print('\n\nthe payload\n',payload)
-                print('\n\nthe payload data\n',payload.get('data', {}))
-                print('\n\nthe assignment_id from payload ----',data.get('assignment_id'))
-                
-                
+
                 if not assignment_id:
-                    print("assignment ID missing")
-                    # logging.error("assignment ID is missing from the assignment message.")
-                    
-                    # Acknowledge message to avoid blocking the queue
-                    # ch.basic_ack(delivery_tag=method.delivery_tag)
+                    logger.error("assignment ID is missing from the assignment message.")
                     return
                 
-                
-                
-                else:
-                    print(f"assignment ID is {assignment_id}.\n")
-                    # logging.info(f"assignment ID is {vehicle_id}.")
+                # logger.info(f"assignment ID is {assignment_id}.")
                     
-                    # Acknowledge message to avoid blocking the queue
-                    # ch.basic_ack(delivery_tag=method.delivery_tag)
-                
-                # return
-                
                     
                 # Prepare the URL and payload for the vehicle update
-                url = f"{SERVICE_5_URL}/schedules"
-                
                 schedule_payload = data
-                
-                print(schedule_payload)
-                
-                payload1= {
-                'event_type': 'assignment_created', 
-                'data': {'assignment_id': 25, 
-                        'driver_id': 4, 
-                        'vehicle_id': 5, 
-                        'start_date_time': '2024-12-07T22:36:44', 
-                        'end_date_time': None, 
-                        'status': 'scheduled'
-                        }
-                }
-                
+                logger.info(body)
+
                 new_maintenance = {
                     "schedule_type_id":data.get('assignment_id'),
                     "schedule_type":"assignment",
@@ -98,13 +63,12 @@ class Message_handler:
                     "description":data.get('description')
                     }
                 
-                print(new_maintenance)
+                logger.info(data)
+                logger.info(new_maintenance)
                 
                 
-                # return
+                return
 
-                # Make a POSTT request to update the driver's status
-                response = requests.post(url, json=new_maintenance, timeout=5)
                 
                 if response.status_code == 200 or response.status_code == 201 :
                     print(f"Assignment ID {assignment_id} has been added successfully.")

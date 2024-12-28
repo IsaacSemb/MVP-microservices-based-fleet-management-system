@@ -39,7 +39,7 @@ def create_driver():
         try:
             # create the message to send to broker
             new_driver_created_message = {
-            "event_type": "driver_created",
+            "event_type": "new_driver_created",
             "data": new_driver.to_dict()
             }
             logger.info(new_driver_created_message)
@@ -157,8 +157,8 @@ def get_driver(driver_id):
         if driver:
             driver_object = driver.to_dict()
             return jsonify(driver_object), 200
-        else:
-            return jsonify({"error": "Driver not found"}), 404
+        
+        return jsonify({"error": "Driver not found"}), 404
 
     except SQLAlchemyError as e:
         # Handle database-related errors

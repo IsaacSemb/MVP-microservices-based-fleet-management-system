@@ -4,6 +4,7 @@ from common.database.db_utils import db
 import os
 from common.message_broker.rabbitmq_utils import RabbitMQ
 from common.logs.logger import logger
+from services.service3_assignments.routes.assignment_route_helpers import validate_and_fetch_resource
 
 
 # service urls
@@ -19,16 +20,19 @@ def add_assignment():
         data = request.json
         driver_id = data.get('driver_id')
         vehicle_id = data.get('vehicle_id')
+        
+        # WE NEED TO VALIDATE THE VEHICLE AND DRIVER IDS
+        driver_exists, response_code,_ = validate_and_fetch_resource(url=f"{SERVICE_1_URL}/drivers",resource_id=driver_id)
+        vehicle_exists, response_code,_ = validate_and_fetch_resource(url=f"{SERVICE_2_URL}/vehicles",resource_id=vehicle_id)
 
-            # WE NEED TO VALIDATE THE VEHICLE AND DRIVER IDS
-        driver_exists, response_code = True , 200 # response_code,_ = validate_and_fetch_resource(url=f"{SERVICE_1_URL}/drivers",resource_id=driver_id)
-        vehicle_exists, response_code = True , 200 # response_code,_ = validate_and_fetch_resource(url=f"{SERVICE_2_URL}/vehicles",resource_id=vehicle_id)
-
+        
         if not driver_exists:
-            return jsonify({"error": "Driver not found in driver service"}), response_code
+            return jsonify({"error": "Cannot add non-existent ID. Driver ID not found in driver service"}), 404
         if not vehicle_exists:
-            return jsonify({"error": "Vehicle not found in vehicle service"}), response_code
-
+            return jsonify({"error": "Cannot add non-existent ID. Vehicle ID not found in vehicle service"}), 404
+        
+        # return jsonify({"message": "both driver and vehicle exist"}), 201   # delete after
+ 
         # Create new assignment
         new_assignment = Assignment(
             driver_id=driver_id,
@@ -46,7 +50,7 @@ def add_assignment():
         try:
             # Publish to the broker
             new_assignment_created_message = {
-                "event_type": "assignment_created",
+                "event_type": "new_assignment_created",
                 "data": new_assignment.to_dict()
             }
             
@@ -58,7 +62,9 @@ def add_assignment():
                 routing_key='',
                 message=new_assignment_created_message
             )
+            
             logger.info(f"published new assignment: {new_assignment.assignment_id}")
+            
         except Exception as e:
             # Log broker error
             logger.error(f"Error publishing message to broker: {str(e)}")

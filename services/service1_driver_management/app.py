@@ -4,10 +4,10 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 import sys
- 
+
 # Load global environment variables
 load_dotenv("../.env") 
- 
+
 # Add the root directory to sys.path
 root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 sys.path.append(root_path) 
@@ -62,4 +62,3 @@ if __name__ == "__main__":
         port=APP_PORT,
         debug=os.getenv("FLASK_ENV") == "development"
     )
- 

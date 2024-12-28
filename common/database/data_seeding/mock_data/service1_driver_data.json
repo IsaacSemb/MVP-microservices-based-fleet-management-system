@@ -1,4 +1,4 @@
-[{"driver_id":1,"first_name":"Cherilynn","last_name":"Pentony","sex":"Female","license_no":"GH7788","contact_info":"777-742-0696","status":"active"},
+[{"driver_id":1,"first_name":"Cherilynn","last_name":"Pentony","sex":"Female","license_no":"GH7788","contact_info":"777-742-0696","status":"available"},
 {"driver_id":2,"first_name":"Alethea","last_name":"Rosewarne","sex":"Female","license_no":"CC5566","contact_info":"659-403-6683","status":"available"},
 {"driver_id":3,"first_name":"Thayne","last_name":"Ybarra","sex":"Male","license_no":"MM5566","contact_info":"148-389-8149","status":"available"},
 {"driver_id":4,"first_name":"Hurley","last_name":"Chasney","sex":"Male","license_no":"RR3344","contact_info":"192-973-7284","status":"available"},

@@ -14,4 +14,4 @@ if __name__ == "__main__":
     print(f"Resolved file path: {mock_data_path}")
     
     # Service 5: schedule
-    bulk_insert(app, Schedule, mock_data_path, number_of_entries=10)
+    bulk_insert(app, Schedule, mock_data_path, number_of_entries=2)

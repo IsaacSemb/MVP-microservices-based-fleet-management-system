@@ -51,6 +51,9 @@ def create_schedule():
 @schedule_bp.route('/schedules', methods=['GET'])
 def get_all_schedules():
     try:
+        # Check for 'summary' query parameter
+        summary = request.args.get('summary', 'false').lower() == 'true'
+        
         schedules = Schedule.query.all()
         
         if not schedules:
@@ -69,7 +72,8 @@ def get_all_schedules():
             } for schedule in schedules
         ]
         
-        return jsonify(schedule_list), 200
+        if summary:
+            return jsonify(schedule_list), 200
     
     except SQLAlchemyError as e:
         logger.error(f"Database error : {str(e)}")
@@ -86,11 +90,11 @@ def get_all_schedules():
             if schedule["schedule_type"] == "task":                
                 response = requests.get(f"{SERVICE_7_URL}/tasks/{schedule['schedule_type_id']}", timeout=5)
                 print(response.json())
-                                
+
             elif schedule["schedule_type"] == "maintenance":
                 response = requests.get(f"{SERVICE_4_URL}/maintenance/{schedule['schedule_type_id']}", timeout=5)
                 print(response.json())                
-            
+
             elif schedule["schedule_type"] == "assignment":
                 response = requests.get(f"{SERVICE_3_URL}/assignments/{schedule['schedule_type_id']}", timeout=5)
                 print(response.json())
@@ -104,18 +108,13 @@ def get_all_schedules():
                 schedule["details"] = response.json()
                 
             else:
-                schedule["details"] = f"Error: {response.status_code} - {response.text}"
+                # schedule["details"] = f"Error: {response.status_code} - {response.text}"
+                schedule["details"] = f"{schedule['schedule_type']} with ID {schedule['schedule_type_id']} doesnt exist "
 
         except requests.RequestException as e:
             schedule["details"] = f"Error fetching details: {str(e)}"
 
     return jsonify(schedule_list), 200
-
-
-
-
-
-
 
 
 

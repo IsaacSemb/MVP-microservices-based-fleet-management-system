@@ -1,4 +1,4 @@
-[{"vehicle_id":1,"make":"MG","model":"MGB","year":2003,"fuel_type":"hybrid","vehicle_type":null,"status":"assigned","reg_no":null},
+[{"vehicle_id":1,"make":"MG","model":"MGB","year":2003,"fuel_type":"hybrid","vehicle_type":null,"status":"available","reg_no":null},
 {"vehicle_id":2,"make":"Lexus","model":"RX","year":2009,"fuel_type":"diesel","vehicle_type":null,"status":"available","reg_no":"RST852"},
 {"vehicle_id":3,"make":"Saab","model":"9-7X","year":2000,"fuel_type":"petrol","vehicle_type":"van","status":"available","reg_no":null},
 {"vehicle_id":4,"make":"Chevrolet","model":"Impala","year":2020,"fuel_type":"diesel","vehicle_type":null,"status":null,"reg_no":"RST852"},

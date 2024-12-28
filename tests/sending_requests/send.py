@@ -34,7 +34,7 @@ def send_post_requests(data_list, url):
             end_time = time.time()  # End timing the request
             elapsed_time = end_time - start_time  # Calculate elapsed time for the request
             
-            print(f"Request {i+1}: Status Code: {response.status_code}, Response: {response.text}, Time: {elapsed_time:.4f} seconds")
+            # print(f"Request {i+1}: Status Code: {response.status_code}, Response: {response.text}, Time: {1000*elapsed_time:.0f} milliseconds")
             
             total_time += elapsed_time  # Add elapsed time to the total
             
@@ -42,10 +42,11 @@ def send_post_requests(data_list, url):
             print(f"Request {i+1}: An error occurred: {e}")
         
         # Limit requests 
-        if i == 1:  
+        if i == 1000:  
             break
 
-    print(f"Total time for sending {i+1} requests: {total_time:.4f} seconds")
+    print(f"Total time for sending {i+1} requests: {1000*total_time:.4f} milliseconds")
+    print(f"average_time for {i+1} requests: {(1000*total_time)//(i+1)} milliseconds")
 
 if __name__ == "__main__":
     # Path to the JSON file containing the driver data
@@ -54,7 +55,7 @@ if __name__ == "__main__":
     current_relative_path_to_target = '../../common/database/data_seeding//mock_data/service1_driver_data.json'
     data_path = os.path.abspath( os.path.join(os.path.dirname(__file__) , current_relative_path_to_target) )
      
-    print(f"Resolved file path: {data_path}")
+    # print(f"Resolved file path: {data_path}")
     json_file_path = data_path
     
     # Define the endpoint URL

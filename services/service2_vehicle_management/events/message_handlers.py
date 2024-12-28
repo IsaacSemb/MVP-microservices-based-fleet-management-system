@@ -39,8 +39,11 @@ class Message_handler:
             # Parse the message body
             payload = json.loads(body)
             
+            logger.info(payload)
+            
+            
             # Filter by event type
-            if payload.get('event_type') != 'assignment_created':
+            if payload.get('event_type') != 'new_assignment_created':
                 logger.warning(f"Ignoring unsupported event type: {payload.get('event_type')}")
                 return
             

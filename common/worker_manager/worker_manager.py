@@ -15,8 +15,8 @@ def start_service_workers(service_consumers):
     try:
         while True: # Check if the service has workers
             while len(service_consumers) == 0:
-                logger.info("NO CONSUMERS FOUND! Retrying in 60 seconds...")
-                time.sleep(180)  # Wait before checking again
+                logger.info("NO CONSUMERS FOUND! Retrying every 5 minutes...")
+                time.sleep(300)  # Wait before checking again
                 continue
             
             # Initialize RabbitMQ object

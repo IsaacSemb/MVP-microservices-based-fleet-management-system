@@ -14,4 +14,4 @@ if __name__ == "__main__":
     print(f"Resolved file path: {mock_data_path}")
     
     # Service 1: Driver Data
-    bulk_insert(app, Vehicle, mock_data_path, number_of_entries=15)
+    bulk_insert(app, Vehicle, mock_data_path, number_of_entries=5)

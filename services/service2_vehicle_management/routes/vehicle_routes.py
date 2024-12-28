@@ -131,16 +131,23 @@ def get_all_vehicles():
 @vehicle_blueprint.route('/vehicles/<int:vehicle_id>', methods=['GET'])
 def get_vehicle(vehicle_id):
     try:
+        # query the vehicles database for id
         vehicle = Vehicle.query.get(vehicle_id)
+        
+        # check for existence
         if vehicle:
             return jsonify(vehicle.to_dict()), 200
+        
         return jsonify({"error": "Vehicle not found"}), 404
+    
     except SQLAlchemyError as sql_err:
         logger.error(f"Error fetching vehicles: {str(sql_err)}")
         return jsonify({"error": f"Database error: {str(sql_err)}"}), 500
+    
     except Exception as e:
         logger.error(f"Error fetching vehicles: {str(e)}")
         return jsonify({"error": str(e)}), 400
+
 
 @vehicle_blueprint.route('/vehicles/<int:vehicle_id>', methods=['DELETE'])
 def delete_vehicle(vehicle_id):
