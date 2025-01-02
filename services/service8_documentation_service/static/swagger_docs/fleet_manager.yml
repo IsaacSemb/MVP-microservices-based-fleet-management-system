@@ -37,19 +37,7 @@ paths:
               status: "available"
       responses: # Define possible responses
         "201":
-          description: "Driver created successfully."
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Driver"
-              example:
-                driver_id: 1
-                first_name: "John"
-                last_name: "Doe"
-                license_no: "D123456789"
-                contact_info: "123-456-789"
-                sex: "Male"
-                status: "available"
+          $ref: "./response_codes.yml#/responseCodes/successfulCreation"
         "400":
           $ref: "./response_codes.yml#/responseCodes/RequestBodyError"
         "404":
@@ -201,19 +189,7 @@ paths:
               status: "active"
       responses:
         "200":
-          description: "Driver updated successfully."
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Driver"
-              example:
-                driver_id: 1
-                first_name: "Jane"
-                last_name: "Doe"
-                license_no: "D987654321"
-                contact_info: "jane.doe@example.com"
-                sex: "Female"
-                status: "active"
+          $ref: "./response_codes.yml#/responseCodes/successfulUpdate"
         "400":
           $ref: "./response_codes.yml#/responseCodes/RequestBodyError"
         "404":
@@ -276,18 +252,7 @@ paths:
 
       responses: # Define possible responses
         "201":
-          description: "vehicle created successfully."
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Vehicle"
-              example:
-                make: "toyota"
-                model: "corolla"
-                reg_no: "ABC123"
-                fuel_type: "petrol"
-                vehicle_type: "car"
-                status: "available"
+          $ref: "./response_codes.yml#/responseCodes/successfulCreation"
         "400":
           $ref: "./response_codes.yml#/responseCodes/RequestBodyError"
         "404":
@@ -335,7 +300,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/vehicle"
+                  $ref: "#/components/schemas/Vehicle"
 
               example:
                 summary:
@@ -452,23 +417,13 @@ paths:
 
       responses:
         "200":
-          description: "vehicle updated successfully."
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Vehicle"
-              example:
-                vehicle_id: 5
-                make: "MG"
-                model: "MGB"
-                reg_no: "EVR9645"
-                fuel_type: "hybrid"
-                vehicle_type: "not_specified"
-                status: "available"
+          $ref: "./response_codes.yml#/responseCodes/successfulUpdate"
         "404":
           $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
         "500":
           $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
 
     delete:
       tags:
@@ -524,18 +479,7 @@ paths:
 
       responses:
         "201":
-          description: "assignment created successfully."
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Assignment"
-              example:
-                assignment_id: 1
-                driver_id: 2
-                vehicle_id: 3
-                start_date_time: "2025-02-01"
-                end_date_time: "2025-02-08"
-                status: "scheduled"
+          $ref: "./response_codes.yml#/responseCodes/successfulCreation"
         "400":
           $ref: "./response_codes.yml#/responseCodes/RequestBodyError"
         "404":
@@ -552,10 +496,9 @@ paths:
         - url: "http://localhost:5003"
       summary: "Retrieve all assignments"
       description: |
-        Fetch a list of all assignments in the system with options for   
-        details only    
-        summary only    
-        full (summary and details)
+        Fetches a list of all assignments in the system with options for    
+        summarised version where only ids are pulled (DEFAULT)    
+        full version where the id (driver and vehicle) is replaced by the entire object from its home service
 
       parameters:
         - name: response_type
@@ -563,7 +506,8 @@ paths:
           required: false
           description: >
             Possible parameters to use    
-              - summary
+              - summary (DEFAULT)
+              - detailed (HAS NOT BEEN IMPLEMENTED YET)
           schema:
             type: string
             enum:
@@ -581,7 +525,42 @@ paths:
                 items:
                   $ref: "#/components/schemas/Assignment"
 
-              example: none
+              examples:
+                example1:
+                  - assignment_id: 1
+                    driver_id: 1
+                    vehicle_id: 1
+                    start_date_time: "2025-02-01"
+                    end_date_time: "2025-02-08"
+                    status: "scheduled"
+                  - assignment_id: 2
+                    driver_id: 3
+                    vehicle_id: 4
+                    start_date_time: "2025-03-01"
+                    end_date_time: "2025-03-08"
+                    status: "scheduled"
+
+                # example2:
+                # - assignment_id: 1
+                #   driver_id:
+                #     driver_id: 1
+                #     first_name: "are-You-Not-entertained?"
+                #     last_name: "Semb"
+                #     license_no: "D123456789"
+                #     contact_info: "123-456-789"
+                #     sex: "Male"
+                #     status: "available"
+                #   vehicle_id:
+                #     vehicle_id: 1
+                #     make: "MG"
+                #     model: "MGB"
+                #     reg_no: "EVR9645"
+                #     fuel_type: "hybrid"
+                #     vehicle_type: "not_specified"
+                #     status: "available"
+                #   start_date_time: "2025-02-01"
+                #   end_date_time: "2025-02-08"
+                #   status: "scheduled"
 
         "404":
           $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
@@ -613,7 +592,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Assignment"
-              example: none
+              example:
+                assignment_id: 1
+                driver_id: 1
+                vehicle_id: 1
+                start_date_time: "2024-12-31"
+                end_date_time: "2025-01-15"
+                status: "active"
 
         "404":
           $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
@@ -647,21 +632,22 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/Assignment"
-            example: none
+            example:
+              driver_id: 2
+              vehicle_id: 7
+              start_date_time: "2025-01-31"
+              end_date_time: "2025-02-15"
+              status: "scheduled"
 
       responses:
         "200":
-          description: "assignment updated successfully."
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Assignment"
-              example: none
-
+          $ref: "./response_codes.yml#/responseCodes/successfulCreation"
         "404":
           $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
         "500":
           $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
 
     delete:
       tags:
@@ -690,95 +676,859 @@ paths:
 
   # SERVICE4 MAINTENANCE REPAIRS
   /maintenance:
-    get:
+    # type of request it is
+    post:
       tags:
-        - "SERVICE 4: Maintenance-Repairs APIs"
+        - "SERVICE 4: Maintenance and Repairs APIs"
       servers:
-        - url: ""
-      summary: ""
-      description: ""
-      responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                type: ""
-                items:
-                  $ref: ""
+        - url: "http://localhost:5004"
+      summary: "Create a maintenance and write the record to the database"
+      description: |
+        This endpoint allows clients to create a new maintenance log by providing the necessary details.   
+        there is a preliminary check for vehicle ID check in the vehicle service    
+        If ID doesnt exist in vehicle service, throws Error
+
+      requestBody: # Define the request body
+        description: "Maintenance Object that needs to be added to the database"
+        required: true
+        content:
+          application/json: # Input content type
+            schema:
+              $ref: "#/components/schemas/Maintenance"
+            example: # Example of the input
+              vehicle_id: 2
+              maintenance_type: "repair"
+              start_date_time: "2025-01-10"
+              end_date_time: "2025-01-15"
+              expected_completion_date_time: "2025-01-15"
+              cost: 75.75
+              description: "Door replacement"
+              parts_used: "door"
+              status: "ongoing"
+
+      responses: # Define possible responses
+        "201":
+          $ref: "./response_codes.yml#/responseCodes/successfulCreation"
+        "400":
+          $ref: "./response_codes.yml#/responseCodes/RequestBodyError"
         "404":
           $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
         "500":
           $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
+    get:
+      tags:
+        - "SERVICE 4: Maintenance and Repairs APIs"
+      # the url to call
+      servers:
+        - url: "http://localhost:5004"
+
+      summary: "Retrieve all maintenances and repairs"
+      description: >
+        Fetch a list of all maintenances and repairs in the system    
+        has response type parameter   
+        response_type=summary ( NOT IMPLEMENTED )   
+          - this is the defaulT where the id is not replaced
+          - if not included, the vehicle id is replaced with the full vehicle details object from the vehicle service
+
+      parameters:
+        - name: response_type
+          in: query
+          required: false
+          description: >
+            Possible parameters to use    
+              - summary   
+            Default is summary
+
+          schema:
+            type: string
+            enum:
+              - summary
+            default: summary
+
+      responses:
+        "200":
+          description: "List of maintenances and repairs retrieved successfully (default parameter is summary)."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Maintenance"
+              example:
+                - maintenance_id: 1
+                  vehicle_id: 2
+                  maintenance_type: "maintenance"
+                  start_date_time: "2025-01-05"
+                  end_date_time: "2025-01-05"
+                  expected_completion_date_time: "2025-01-05"
+                  cost: 100.00
+                  description: "routine check up"
+                  parts_used: null
+                  status: "schduled"
+                - maintenance_id: 2
+                  vehicle_id: 5
+                  maintenance_type: "repair"
+                  start_date_time: "2025-01-01"
+                  end_date_time: "2025-01-02"
+                  expected_completion_date_time: "2025-01-02"
+                  cost: 25.50
+                  description: null
+                  parts_used: null
+                  status: "completed"
+
+              #  NEED EXAMPLE FOR FULL RESPONSE WHERE ID IS REPLACED BY VEHICLE OBJECT
+
+              description: "this is the summary response"
+
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
+  /maintenance/{maintenance_id}:
+    get:
+      tags:
+        - "SERVICE 4: Maintenance and Repairs APIs"
+      servers:
+        - url: "http://localhost:5004"
+      summary: "Retrieve a maintenance by ID"
+      description: "Fetch details of a specific maintenance using their unique ID."
+      parameters: # Path parameter for maintenance_id
+        - name: maintenance_id
+          in: path
+          required: true
+          description: "Unique ID of the maintenance to retrieve."
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: "maintenance retrieved successfully."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Maintenance"
+              example:
+                maintenance_id: 1
+                vehicle_id: 2
+                maintenance_type: "maintenance"
+                start_date_time: "2025-01-05"
+                end_date_time: "2025-01-05"
+                expected_completion_date_time: "2025-01-05"
+                cost: 100.00
+                description: "routine check up"
+                parts_used: null
+                status: "schduled"
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
+    put:
+      tags:
+        - "SERVICE 4: Maintenance and Repairs APIs"
+      servers:
+        - url: "http://localhost:5004"
+      summary: "Update a maintenance by ID search "
+      description: "Update details of a specific maintenance using their unique ID."
+      parameters:
+        - name: maintenance_id
+          in: path
+          required: true
+          description: "Unique ID of the maintenance to update."
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        description: |
+          maintenance object with updated details.   
+          In this object, you just need to include the fields you need to change    
+          fields that aren't included default back to the already existing fields
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Maintenance"
+            example:
+              cost: 350.00
+      responses:
+        "200":
+          $ref: "./response_codes.yml#/responseCodes/successfulUpdate"
+        "400":
+          $ref: "./response_codes.yml#/responseCodes/RequestBodyError"
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+
+    delete:
+      tags:
+        - "SERVICE 4: Maintenance and Repairs APIs"
+      servers:
+        - url: "http://localhost:5004"
+      summary: "delete a maintenance from database by unique ID search"
+      description: "deletes a specific maintenance from the database using their unique ID"
+      parameters:
+        - name: maintenance_id
+          in: path
+          required: true
+          description: "Unique ID of the maintenance to retrieve."
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          $ref: "./response_codes.yml#/responseCodes/successfulDeletion"
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
 
   # SERVICE5 SCHEDULING
   /schedules:
-    get:
+    # type of request it is
+    post:
       tags:
-        - "SERVICE 5: Schedule APIs"
+        - "SERVICE 5: Schedules APIs"
       servers:
-        - url: ""
-      summary: ""
-      description: ""
+        - url: "http://localhost:5005"
+      summary: "Create a schedule and write the record to the database"
+      description: |
+        This endpoint allows clients to create a new schedule item by providing the necessary details.   
+        there is a preliminary check for schedule type ID in the home service   
+          - assignment service    
+          - tasks service   
+          - maintenance service       
+
+        If ID doesnt exist in its home service, Error is thrown
+
+      requestBody:
+        description: "Schedule Object that needs to be added to the database"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Schedule"
+            example:
+              schedule_type: "task"
+              schedule_type_id: 2
+              start_date_time: "2025-01-10"
+              end_date_time: "2025-01-15"
+              expected_completion_date_time: "2025-01-15"
+              status: "scheduled"
+              description: null
+
       responses:
-        "200":
-          description: ""
-          content:
-            application/json:
-              schema:
-                type: ""
-                items:
-                  $ref: ""
+        "201":
+          $ref: "./response_codes.yml#/responseCodes/successfulCreation"
+        "400":
+          $ref: "./response_codes.yml#/responseCodes/RequestBodyError"
         "404":
           $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
         "500":
           $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
+    get:
+      tags:
+        - "SERVICE 5: Schedules APIs"
+      servers:
+        - url: "http://localhost:5005"
+
+      summary: "Retrieve all schedules"
+      description: >
+        Fetch a list of all schedules in the system    
+        has response type parameter   
+        response_type=summary ( NOT IMPLEMENTED )   
+          - this is the default where the home service id is not replaced
+          - if not included, the home service id is replaced with the details of the object from the home service
+
+      parameters:
+        - name: response_type
+          in: query
+          required: false
+          description: >
+            Possible parameters to use    
+              - summary   
+            Default is summary
+
+          schema:
+            type: string
+            enum:
+              - summary
+            default: summary
+
+      responses:
+        "200":
+          description: "List of schedules retrieved successfully (default parameter is summary)."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Schedule"
+              example:
+                - schedule_id: 1
+                  schedule_type: "assignment"
+                  schedule_type_id: 2
+                  start_date_time: "2025-01-10"
+                  end_date_time: "2025-01-15"
+                  expected_completion_date_time: "2025-01-15"
+                  status: "scheduled"
+                  description: null
+                - schedule_id: 2
+                  schedule_type: "task"
+                  schedule_type_id: 2
+                  start_date_time: "2025-01-10"
+                  end_date_time: "2025-01-15"
+                  expected_completion_date_time: "2025-01-15"
+                  status: "scheduled"
+                  description: null
+
+              #  NEED EXAMPLE FOR FULL RESPONSE WHERE ID IS REPLACED BY HOME SERVICE OBJECT
+
+              description: "this is the summary response"
+
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
+  /schedules/{schedule_id}:
+    get:
+      tags:
+        - "SERVICE 5: Schedules APIs"
+      servers:
+        - url: "http://localhost:5005"
+      summary: "Retrieve a schedule by ID"
+      description: "Fetch details of a specific schedule using their unique ID."
+      parameters:
+        - name: schedule_id
+          in: path
+          required: true
+          description: "Unique ID of the schedule to retrieve."
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: "schedule retrieved successfully."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Schedule"
+              example:
+                schedule_id: 2
+                schedule_type: "task"
+                schedule_type_id: 2
+                start_date_time: "2025-01-10"
+                end_date_time: "2025-01-15"
+                expected_completion_date_time: "2025-01-15"
+                status: "scheduled"
+                description: "Transport goods from A to B"
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
+    put:
+      tags:
+        - "SERVICE 5: Schedules APIs"
+      servers:
+        - url: "http://localhost:5005"
+      summary: "Update a schedule by ID search "
+      description: "Update details of a specific schedule using their unique ID."
+      parameters:
+        - name: schedule_id
+          in: path
+          required: true
+          description: "Unique ID of the schedule to update."
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        description: |
+          schedule object with updated details.   
+          In this object, you just need to include the fields you need to change    
+          fields that aren't included default back to the already existing fields
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Schedule"
+            example:
+              status: "completed"
+      responses:
+        "200":
+          $ref: "./response_codes.yml#/responseCodes/successfulUpdate"
+        "400":
+          $ref: "./response_codes.yml#/responseCodes/RequestBodyError"
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+
+    delete:
+      tags:
+        - "SERVICE 5: Schedules APIs"
+      servers:
+        - url: "http://localhost:5005"
+      summary: "delete a schedule from database by unique ID search"
+      description: "deletes a specific schedule from the database using their unique ID"
+      parameters:
+        - name: schedule_id
+          in: path
+          required: true
+          description: "Unique ID of the schedule to retrieve."
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          $ref: "./response_codes.yml#/responseCodes/successfulDeletion"
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
 
   # SERVICE6 FUEL CONSUMPTION SERVICE
   /fuel:
+    # type of request it is
+    post:
+      tags:
+        - "SERVICE 6: fuel consumption APIs"
+      servers:
+        - url: "http://localhost:5006"
+      summary: "Create a fuel record and write the record to the database"
+      description: |
+        This endpoint allows clients to create a new fuel record by providing the necessary details.   
+        there is a preliminary check for vehicle ID in the vehicle service        
+        If ID doesnt exist in the vehicle service, Error is thrown
+
+      requestBody:
+        description: "fuel record Object that needs to be added to the database"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Fuel"
+            example:
+              vehicle_id: 2
+              date: "2025-01-01"
+              fuel_type: "petrol"
+              amount: 20
+              cost: 50.75
+              mileage: 8570
+
+      responses:
+        "201":
+          $ref: "./response_codes.yml#/responseCodes/successfulCreation"
+        "400":
+          $ref: "./response_codes.yml#/responseCodes/RequestBodyError"
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
     get:
       tags:
-        - "SERVICE 6: Fuel Consuption APIs"
+        - "SERVICE 6: fuel consumption APIs"
       servers:
-        - url: ""
-      summary: ""
-      description: ""
+        - url: "http://localhost:5006"
+
+      summary: "Retrieve all fuel records"
+      description: >
+        Fetch a list of all fuel record in the system    
+        has response type parameter   
+        response_type=summary ( NOT IMPLEMENTED )   
+          - this is the default where the vehicle service id is not replaced
+          - if not included, the vehicle service id is replaced with the details of the object from the vehicle service
+
+      parameters:
+        - name: response_type
+          in: query
+          required: false
+          description: >
+            Possible parameters to use    
+              - summary   
+            Default is summary
+
+          schema:
+            type: string
+            enum:
+              - summary
+            default: summary
+
       responses:
         "200":
-          description: ""
+          description: "List of fuel records retrieved successfully (default parameter is summary)."
           content:
             application/json:
               schema:
-                type: ""
+                type: array
                 items:
-                  $ref: ""
+                  $ref: "#/components/schemas/Fuel"
+              example:
+                - fuel_id: 1
+                  vehicle_id: 3
+                  date: "2025-01-01"
+                  fuel_type: "petrol"
+                  amount: 20
+                  cost: 50.75
+                  mileage: 8570
+                - fuel_id: 2
+                  vehicle_id: 5
+                  date: "2025-01-04"
+                  fuel_type: "diesel"
+                  amount: 12
+                  cost: 24.55
+                  mileage: 12456
+
+              #  NEED EXAMPLE FOR FULL RESPONSE WHERE ID IS REPLACED BY HOME SERVICE OBJECT
+
+              description: "this is the summary response"
+
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
+  /fuel/{fuel_id}:
+    get:
+      tags:
+        - "SERVICE 6: fuel consumption APIs"
+      servers:
+        - url: "http://localhost:5006"
+      summary: "Retrieve a fuel record by ID"
+      description: "Fetch details of a specific fuel record using their unique ID."
+      parameters:
+        - name: fuel_id
+          in: path
+          required: true
+          description: "Unique ID of the fuel record to retrieve."
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: "fuel record retrieved successfully."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Fuel"
+              example:
+                fuel_id: 2
+                vehicle_id: 5
+                date: "2025-01-04"
+                fuel_type: "diesel"
+                amount: 12
+                cost: 24.55
+                mileage: 12456
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
+    put:
+      tags:
+        - "SERVICE 6: fuel consumption APIs"
+      servers:
+        - url: "http://localhost:5006"
+      summary: "Update a fuel record by ID search "
+      description: "Update details of a specific fuel using their unique ID."
+      parameters:
+        - name: fuel_id
+          in: path
+          required: true
+          description: "Unique ID of the fuel to update."
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        description: |
+          fuel record object with updated details.   
+          In this object, you just need to include the fields you need to change    
+          fields that aren't included default back to the already existing fields
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Fuel"
+            example:
+              amount: 37
+              # cost: 56.50
+      responses:
+        "200":
+          $ref: "./response_codes.yml#/responseCodes/successfulUpdate"
+        "400":
+          $ref: "./response_codes.yml#/responseCodes/RequestBodyError"
         "404":
           $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
         "500":
           $ref: "./response_codes.yml#/responseCodes/InternalServerError"
 
+    delete:
+      tags:
+        - "SERVICE 6: fuel consumption APIs"
+      servers:
+        - url: "http://localhost:5006"
+      summary: "delete a fuel record from database by unique ID search"
+      description: "deletes a specific fuel record from the database using its unique ID"
+      parameters:
+        - name: fuel_id
+          in: path
+          required: true
+          description: "Unique ID of the fuel record to delete."
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          $ref: "./response_codes.yml#/responseCodes/successfulDeletion"
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
   # SERVICE7 TASKS SERVICES
   /tasks:
+    # type of request it is
+    post:
+      tags:
+        - "SERVICE 7: Tasks APIs"
+      servers:
+        - url: "http://localhost:5007"
+      summary: "Create a task and write the record to the database"
+      description: |
+        This endpoint allows clients to create a new task by providing the necessary details.   
+        there is a preliminary check for assignment ID in the assignment service        
+        If ID doesnt exist in the assignment service, Error is thrown
+
+      requestBody:
+        description: "task Object that needs to be added to the database"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Task"
+            example:
+              task: "delivery"
+              assignment_id: 2
+              start_date_time: "2025-01-05"
+              expected_completion_date_time: "2025-01-05"
+              end_date_time: "2025-01-05"
+              description: "deliver goods from A to B "
+              priority: "medium"
+              status: "scheduled"
+
+      responses:
+        "201":
+          $ref: "./response_codes.yml#/responseCodes/successfulCreation"
+        "400":
+          $ref: "./response_codes.yml#/responseCodes/RequestBodyError"
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
     get:
       tags:
         - "SERVICE 7: Tasks APIs"
       servers:
-        - url: ""
-      summary: ""
-      description: ""
+        - url: "http://localhost:5007"
+
+      summary: "Retrieve all tasks"
+      description: >
+        Fetch a list of all task in the system    
+        has response type parameter   
+        response_type=summary ( NOT IMPLEMENTED )   
+          - this is the default where the assignment service id is not replaced
+          - if not included, the assignment service id is replaced with the details of the object from the assignment service
+
+      parameters:
+        - name: response_type
+          in: query
+          required: false
+          description: >
+            Possible parameters to use    
+              - summary   
+            Default is summary
+
+          schema:
+            type: string
+            enum:
+              - summary
+            default: summary
+
       responses:
         "200":
-          description: ""
+          description: "List of tasks retrieved successfully (default parameter is summary)."
           content:
             application/json:
               schema:
-                type: ""
+                type: array
                 items:
-                  $ref: ""
+                  $ref: "#/components/schemas/Task"
+              example:
+              - task_id: 2
+                task: "delivery"
+                assignment_id: 2
+                start_date_time: "2025-01-05"
+                expected_completion_date_time: "2025-01-05"
+                end_date_time: "2025-01-05"
+                description: "deliver goods from A to B "
+                priority: "medium"
+                status: "scheduled"
+              - task_id: 2
+                task: "shift"
+                assignment_id: 2
+                start_date_time: "2025-01-02"
+                expected_completion_date_time: "2025-01-07"
+                end_date_time: "2025-01-07"
+                description: "Transporting CLients"
+                priority: "high"
+                status: "ongoing"
+              
+
+              #  NEED EXAMPLE FOR FULL RESPONSE WHERE ID IS REPLACED BY HOME SERVICE OBJECT
+
+              description: "this is the summary response"
+
         "404":
           $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
         "500":
           $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
+  /tasks/{task_id}:
+    get:
+      tags:
+        - "SERVICE 7: Tasks APIs"
+      servers:
+        - url: "http://localhost:5007"
+      summary: "Retrieve a task by ID"
+      description: "Fetch details of a specific task using their unique ID."
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          description: "Unique ID of the task to retrieve."
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: "task retrieved successfully."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+              example:
+                task_id: 2
+                task: "shift"
+                assignment_id: 2
+                start_date_time: "2025-01-02"
+                expected_completion_date_time: "2025-01-07"
+                end_date_time: "2025-01-07"
+                description: "Transporting CLients"
+                priority: "high"
+                status: "ongoing"
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
+    put:
+      tags:
+        - "SERVICE 7: Tasks APIs"
+      servers:
+        - url: "http://localhost:5007"
+      summary: "Update a task by ID search "
+      description: "Update details of a specific fuel using their unique ID."
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          description: "Unique ID of the fuel to update."
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        description: |
+          task object with updated details.   
+          In this object, you just need to include the fields you need to change    
+          fields that aren't included default back to the already existing fields
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Task"
+            example:
+              task: "delivery"
+
+      responses:
+        "200":
+          $ref: "./response_codes.yml#/responseCodes/successfulUpdate"
+        "400":
+          $ref: "./response_codes.yml#/responseCodes/RequestBodyError"
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+
+    delete:
+      tags:
+        - "SERVICE 7: Tasks APIs"
+      servers:
+        - url: "http://localhost:5007"
+      summary: "delete a task from database by unique ID search"
+      description: "deletes a specific fuel from the database using their unique ID"
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          description: "Unique ID of the task to retrieve."
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          $ref: "./response_codes.yml#/responseCodes/successfulDeletion"
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
 
 # REUSABLE COMPONENTS
 components:
@@ -793,8 +1543,8 @@ components:
       $ref: "./service4_maintenance_schema.yml#/Maintenance"
     Schedule:
       $ref: "./service5_schedule_schema.yml#/Schedule"
-    FuelConsumption:
-      $ref: "./service6_fuel_schema.yml#/FuelConsumption"
+    Fuel:
+      $ref: "./service6_fuel_schema.yml#/Fuel"
     Task:
       $ref: "./service7_task_schema.yml#/Task"
 

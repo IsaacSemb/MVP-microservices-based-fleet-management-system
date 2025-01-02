@@ -1,30 +1,40 @@
-FuelConsumption:
+Fuel:
   type: object
   properties:
     fuel_id:
       type: integer
-      description: "Unique identifier for the fuel consumption record."
+      description: "Unique identifier for the fuel consumption entry."
     vehicle_id:
       type: integer
-      description: "Foreign key reference to the vehicle's unique ID."
+      description: "Identifier for the vehicle associated with the fuel consumption."
+    date:
+      type: string
+      format: date
+      description: "Date of the refueling in ISO 8601 format (YYYY-MM-DD)."
     fuel_type:
       type: string
       enum:
         - petrol
         - diesel
-        - electric
-        - hybrid
         - not_specified
-      description: "Type of fuel consumed."
+      description: "Type of fuel used during the refueling."
+      default: "not_specified"
     amount:
       type: number
       format: float
-      description: "Amount of fuel consumed in liters."
-    date:
-      type: string
-      format: date
-      description: "Date when the fuel consumption was recorded."
+      description: "Amount of fuel added (e.g., liters or gallons)."
     cost:
       type: number
       format: float
-      description: "Cost of the fuel consumed."
+      description: "Cost of the refueling."
+    mileage:
+      type: integer
+      description: "Mileage of the vehicle at the time of refueling. Optional for analysis."
+      nullable: true
+  required:
+    - vehicle_id
+    - date
+    - fuel_type
+    - amount
+    - cost
+  description: "Schema representing a fuel consumption record for a vehicle."

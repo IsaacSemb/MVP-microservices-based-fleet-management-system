@@ -3,25 +3,61 @@ Maintenance:
   properties:
     maintenance_id:
       type: integer
-      description: "Unique identifier for the maintenance record."
+      description: "Unique identifier for the maintenance log entry."
     vehicle_id:
       type: integer
-      description: "Foreign key reference to the vehicle's unique ID."
+      description: "Identifier for the vehicle undergoing maintenance."
+    maintenance_type:
+      type: string
+      enum:
+        - routine
+        - repair
+        - unspecified
+      description: "Type of maintenance being performed."
+      default: "unspecified"
+    start_date_time:
+      type: string
+      format: date-time
+      description: "Start date and time of the maintenance activity."
+      default: "Current UTC time when record is created."
+    end_date_time:
+      type: string
+      format: date-time
+      description: "End date and time of the maintenance activity."
+      nullable: true
+    expected_completion_date_time:
+      type: string
+      format: date-time
+      description: "Expected completion date and time of the maintenance activity."
+      nullable: true
+    cost:
+      type: number
+      format: float
+      description: "Cost of the maintenance activity."
+      nullable: true
     description:
       type: string
-      description: "Details about the maintenance work."
-    scheduled_date:
+      description: "Details or description of the maintenance activity."
+      maxLength: 255
+      nullable: true
+    parts_used:
       type: string
-      format: date
-      description: "Date when the maintenance is scheduled."
-    completion_date:
-      type: string
-      format: date
-      description: "Date when the maintenance was completed."
+      description: "Parts used in the maintenance activity."
+      maxLength: 255
+      nullable: true
     status:
       type: string
       enum:
-        - pending
-        - in_progress
+        - scheduled
+        - ongoing
+        - cancelled
         - completed
-      description: "Current status of the maintenance task."
+        - overdue
+      description: "Current status of the maintenance activity."
+      default: "scheduled"
+  required:
+    - vehicle_id
+    - maintenance_type
+    - start_date_time
+    - status
+  description: "Schema representing a maintenance log entry."

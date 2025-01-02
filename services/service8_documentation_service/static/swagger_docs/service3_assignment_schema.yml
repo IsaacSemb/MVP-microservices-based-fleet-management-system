@@ -1,4 +1,3 @@
-# Assignment schema file for service 3
 Assignment:
   type: object
   properties:
@@ -6,11 +5,23 @@ Assignment:
       type: integer
       description: "Unique identifier for the assignment."
     driver_id:
-      type: integer
-      description: "Foreign key reference to the driver's unique ID."
+      oneOf:
+        - type: integer
+          description: "Foreign key reference to the driver's unique ID."
+        
+        - type: object
+          $ref: "./service1_driver_schema.yml#/Driver"
+          description: "Details of the vehicle." 
+    
     vehicle_id:
-      type: integer
-      description: "Foreign key reference to the vehicle's unique ID."
+      oneOf:
+        - type: integer
+          description: "Foreign key reference to the vehicle's unique ID."
+        
+        - type: object
+          $ref: "./service2_vehicle_schema.yml#/Vehicle"
+          description: "Details of the vehicle." 
+    
     start_date_time:
       type: string
       format: date-time

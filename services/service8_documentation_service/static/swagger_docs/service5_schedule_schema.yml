@@ -4,28 +4,50 @@ Schedule:
     schedule_id:
       type: integer
       description: "Unique identifier for the schedule."
-    entity_type:
+    schedule_type:
       type: string
       enum:
-        - driver
-        - vehicle
-      description: "Type of entity being scheduled."
-    entity_id:
+        - maintenance
+        - task
+        - assignment
+      description: "Type of the schedule (e.g., maintenance, task, assignment)."
+    schedule_type_id:
       type: integer
-      description: "Foreign key reference to the entity's unique ID."
-    start_time:
+      description: "Identifier for the specific type instance related to the schedule."
+      nullable: true
+    start_date_time:
       type: string
       format: date-time
-      description: "Start time of the schedule."
-    end_time:
+      description: "Start date and time of the schedule."
+      default: "Current UTC time when record is created."
+    end_date_time:
       type: string
       format: date-time
-      description: "End time of the schedule."
+      description: "End date and time of the schedule."
+      nullable: true
+    expected_completion:
+      type: string
+      format: date-time
+      description: "Expected completion date and time of the schedule."
+      nullable: true
     status:
       type: string
       enum:
         - scheduled
-        - active
-        - completed
+        - ongoing
         - cancelled
+        - completed
+        - overdue
+        - active
       description: "Current status of the schedule."
+      default: "scheduled"
+    description:
+      type: string
+      description: "Details or description of the schedule."
+      maxLength: 255
+      nullable: true
+  required:
+    - schedule_type
+    - start_date_time
+    - status
+  description: "Schema representing a schedule."

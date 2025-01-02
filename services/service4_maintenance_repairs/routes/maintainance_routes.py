@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify
 from services.service4_maintenance_repairs.models import MaintenanceLog
 from common.database.db_utils import db
 from common.message_broker.rabbitmq_utils import RabbitMQ

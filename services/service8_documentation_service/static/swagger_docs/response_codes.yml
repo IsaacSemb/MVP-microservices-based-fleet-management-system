@@ -1,6 +1,48 @@
 
-responseCodes: 
-  #  universal template for 404 class of errors
+responseCodes:
+  # 200/201 RESOURCE CREATION
+  successfulCreation:
+    # swagger-ui strict zone below
+    description: "successful resource creation"
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              description: "successful creation"
+              example: "<Resource_name> with ID <id> created successfully"
+  
+  # 200 RESOURCE UPDATE
+  successfulUpdate:
+    # swagger-ui strict zone below
+    description: "successful resource update"
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              description: "successful update"
+              example: "<Resource_name> with ID <id> updated successfully"
+
+  # 200 RESOURCE DELETION
+  successfulDeletion:
+    # swagger-ui strict zone below
+    description: "successful resource deletion"
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              description: "successful deletion"
+              example: "<Resource_name> with ID <id> deleted successfully"
+
+  # 404 NOT FOUND - CLIENT ERROR
   resourceNotFound:
     # swagger-ui strict zone below
     description: "Resource not found."
@@ -12,9 +54,9 @@ responseCodes:
             error:
               type: string
               description: "Error message explaining the resource is not found."
-              example: "Resource with ID <id> not found"
+              example: "<Resource_name> with ID <id> not found"
 
-  #  universal template for 500 class of errors
+  # 500 SERVER ISSUE - SERVER ERROR
   InternalServerError:
     # swagger-ui strict zone below
     description: "Server Error for example if something goes wrong with the database"
@@ -27,7 +69,7 @@ responseCodes:
               type: string
               description: "Error message explaining an Internal Server Error."
               example: "Server Error"
-
+  # 503 SERVICE ERROR - SERVER ERROR
   ServiceDownError:
     # swagger-ui strict zone below
     description: "Incase the service is unavailable"
@@ -39,21 +81,11 @@ responseCodes:
             error:
               type: string
               description: "Error message explaining that service is down."
-              example: "Service is currently unavailable"
+              example: "<Service_name> is currently unavailable. Try again later!"
 
-  successfulDeletion:
-    # swagger-ui strict zone below
-    description: "sucessful resource deletion"
-    content:
-      application/json:
-        schema:
-          type: object
-          properties:
-            error:
-              type: string
-              description: "sucessful deletion"
-              example: "Resource with ID <id> deleted successfully"
-
+    
+  
+  # 400 BODY ERROR - CLIENT ERROR
   RequestBodyError:
     description: "Warning of an error with the body of the request e.g. a missing field"
     content:

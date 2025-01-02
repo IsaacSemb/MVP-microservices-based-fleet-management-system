@@ -4,27 +4,53 @@ Task:
     task_id:
       type: integer
       description: "Unique identifier for the task."
-    name:
+    task:
       type: string
-      description: "Name of the task."
+      maxLength: 255
+      description: "Short description of the task."
+    assignment_id:
+      type: integer
+      description: "Identifier of the associated assignment. Nullable for unassigned tasks."
+      nullable: true
+    start_date_time:
+      type: string
+      format: date-time
+      description: "Start date and time of the task. Defaults to the current UTC time when created."
+    end_date_time:
+      type: string
+      format: date-time
+      description: "Actual end date and time of the task."
+      nullable: true
+    expected_completion_date_time:
+      type: string
+      format: date-time
+      description: "Estimated completion date and time of the task."
+      nullable: true
     description:
       type: string
-      description: "Detailed description of the task."
-    assigned_to:
-      type: integer
-      description: "Foreign key reference to the driver's unique ID assigned to the task."
-    vehicle_id:
-      type: integer
-      description: "Foreign key reference to the vehicle's unique ID associated with the task."
-    due_date:
+      description: "Optional detailed description of the task."
+      nullable: true
+    priority:
       type: string
-      format: date
-      description: "Date by which the task should be completed."
+      enum:
+        - low
+        - medium
+        - high
+        - critical
+      description: "Priority level of the task."
+      default: "low"
     status:
       type: string
       enum:
-        - pending
-        - in_progress
-        - completed
+        - scheduled
+        - ongoing
         - cancelled
+        - completed
       description: "Current status of the task."
+      default: "scheduled"
+  required:
+    - task
+    - start_date_time
+    - priority
+    - status
+  description: "Schema representing a task with details, priority, and status."
