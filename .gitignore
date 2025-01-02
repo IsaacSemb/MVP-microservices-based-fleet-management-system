@@ -1,9 +1,10 @@
 # custom tailored
 API_gateway
 0000_LEARNINGS
-ZZZ
+RANDOM-HELPERS
 docs
 learning_tests
+tests
 
 # Virtual environments
 *.venv*/
