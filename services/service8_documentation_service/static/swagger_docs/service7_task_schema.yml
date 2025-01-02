@@ -1,0 +1,30 @@
+Task:
+  type: object
+  properties:
+    task_id:
+      type: integer
+      description: "Unique identifier for the task."
+    name:
+      type: string
+      description: "Name of the task."
+    description:
+      type: string
+      description: "Detailed description of the task."
+    assigned_to:
+      type: integer
+      description: "Foreign key reference to the driver's unique ID assigned to the task."
+    vehicle_id:
+      type: integer
+      description: "Foreign key reference to the vehicle's unique ID associated with the task."
+    due_date:
+      type: string
+      format: date
+      description: "Date by which the task should be completed."
+    status:
+      type: string
+      enum:
+        - pending
+        - in_progress
+        - completed
+        - cancelled
+      description: "Current status of the task."

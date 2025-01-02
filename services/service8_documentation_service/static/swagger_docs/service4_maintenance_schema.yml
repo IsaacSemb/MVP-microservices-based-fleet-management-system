@@ -1,0 +1,27 @@
+Maintenance:
+  type: object
+  properties:
+    maintenance_id:
+      type: integer
+      description: "Unique identifier for the maintenance record."
+    vehicle_id:
+      type: integer
+      description: "Foreign key reference to the vehicle's unique ID."
+    description:
+      type: string
+      description: "Details about the maintenance work."
+    scheduled_date:
+      type: string
+      format: date
+      description: "Date when the maintenance is scheduled."
+    completion_date:
+      type: string
+      format: date
+      description: "Date when the maintenance was completed."
+    status:
+      type: string
+      enum:
+        - pending
+        - in_progress
+        - completed
+      description: "Current status of the maintenance task."

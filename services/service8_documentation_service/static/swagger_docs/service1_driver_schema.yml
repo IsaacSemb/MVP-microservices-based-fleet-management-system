@@ -1,0 +1,33 @@
+Driver:
+  type: object
+  properties:
+    driver_id:
+      type: integer
+      description: "Unique identifier for the driver."
+    first_name:
+      type: string
+      description: "First name of the driver."
+    last_name:
+      type: string
+      description: "Last name of the driver."
+    license_no:
+      type: string
+      description: "Driver's license number."
+    contact_info:
+      type: string
+      description: "Driver's contact information."
+    sex:
+      type: string
+      enum:
+        - Male
+        - Female
+      description: "Gender of the driver."
+    status:
+      type: string
+      enum:
+        - available
+        - assigned
+        - active
+        - unavailable
+      description: "Current status of the driver."
+

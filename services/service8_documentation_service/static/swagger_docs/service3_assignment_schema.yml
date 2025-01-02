@@ -1,0 +1,29 @@
+# Assignment schema file for service 3
+Assignment:
+  type: object
+  properties:
+    assignment_id:
+      type: integer
+      description: "Unique identifier for the assignment."
+    driver_id:
+      type: integer
+      description: "Foreign key reference to the driver's unique ID."
+    vehicle_id:
+      type: integer
+      description: "Foreign key reference to the vehicle's unique ID."
+    start_date_time:
+      type: string
+      format: date-time
+      description: "Start date and time of the assignment."
+    end_date_time:
+      type: string
+      format: date-time
+      description: "End date and time of the assignment."
+    status:
+      type: string
+      enum: 
+        - completed
+        - active
+        - cancelled
+        - scheduled
+      description: "Current status of the assignment."

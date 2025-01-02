@@ -1,0 +1,67 @@
+
+responseCodes: 
+  #  universal template for 404 class of errors
+  resourceNotFound:
+    # swagger-ui strict zone below
+    description: "Resource not found."
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              description: "Error message explaining the resource is not found."
+              example: "Resource with ID <id> not found"
+
+  #  universal template for 500 class of errors
+  InternalServerError:
+    # swagger-ui strict zone below
+    description: "Server Error for example if something goes wrong with the database"
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              description: "Error message explaining an Internal Server Error."
+              example: "Server Error"
+
+  ServiceDownError:
+    # swagger-ui strict zone below
+    description: "Incase the service is unavailable"
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              description: "Error message explaining that service is down."
+              example: "Service is currently unavailable"
+
+  successfulDeletion:
+    # swagger-ui strict zone below
+    description: "sucessful resource deletion"
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              description: "sucessful deletion"
+              example: "Resource with ID <id> deleted successfully"
+
+  RequestBodyError:
+    description: "Warning of an error with the body of the request e.g. a missing field"
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              description: "Missing field in body"
+              example: "Missing required field: <field_name>"

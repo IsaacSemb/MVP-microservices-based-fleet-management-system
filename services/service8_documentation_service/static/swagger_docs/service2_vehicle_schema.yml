@@ -1,0 +1,50 @@
+Vehicle:
+  type: object
+  properties:
+    vehicle_id:
+      type: integer
+      description: "Unique identifier for the vehicle."
+    make:
+      type: string
+      description: "Manufacturer of the vehicle."
+    model:
+      type: string
+      description: "Model of the vehicle."
+    reg_no:
+      type: string
+      description: "Vehicle registration number."
+    fuel_type:
+      type: string
+      enum:
+        - petrol
+        - diesel
+        - electric
+        - hybrid
+        - not_specified
+      description: "Type of fuel the vehicle uses."
+    vehicle_type:
+      type: string
+      enum:
+        - car
+        - truck
+        - van
+        - bus
+        - not_specified
+      description: "Classification of the vehicle."
+    status:
+      type: string
+      enum:
+        - available
+        - assigned
+        - service
+        - on_leave
+      description: "Vehicle's current status in the system."
+
+VehicleExample:
+  vehicle_id: 1
+  make: "MG"
+  model: "MGB"
+  reg_no: "EVR9645"
+  fuel_type: "hybrid"
+  vehicle_type: "not_specified"
+  status: "available"

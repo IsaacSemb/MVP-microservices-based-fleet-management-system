@@ -208,6 +208,27 @@ services:
         condition: service_started
     networks:
       - app_network
+  service8_documentation_service:
+    build:
+      context: .
+      dockerfile: ./services/service8_documentation_service/Dockerfile
+    container_name: sevice8_documentation_service
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env.docker
+    # environment:
+      # SERVICE_7_DB_NAME: ${SERVICE_7_DB_NAME}
+    volumes:
+      - ./services/service8_documentation_service/static:/app/services/service8_documentation_service/static  # Mount the static folder
+      - ./common:/app/common
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    networks:
+      - app_network
 
 networks:
   app_network:

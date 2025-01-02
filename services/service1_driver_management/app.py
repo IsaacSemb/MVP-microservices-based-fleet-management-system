@@ -50,11 +50,14 @@ def test_db():
         logger.warning(f"Database health check failed: {e}")
         return f"Database connection failed: {e}", 500
 
-
 # Register blueprints
 app.register_blueprint(driver_blueprint)
 
-print(os.getenv("DEVELOPER"))
+# import pprint
+
+# # Pretty print all environment variables
+# pprint.pprint(dict(os.environ)) 
+
 
 if __name__ == "__main__":
     app.run(

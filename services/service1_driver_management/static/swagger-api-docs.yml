@@ -1,0 +1,20 @@
+# swagger version
+swagger: "2.0"
+
+# information about swagger
+info:
+  version: "1.0.0"
+  title: "Driver Management Service API"
+  description: "API for managing drivers related data in the Fleet Manager"
+
+# host of the service
+host: "localhost:5001"
+
+# all routes
+paths:
+  /drivers:
+    get:  
+      summary: "get all drivers"
+      responses:
+        200:
+          description: "a list of all drivers in the system"

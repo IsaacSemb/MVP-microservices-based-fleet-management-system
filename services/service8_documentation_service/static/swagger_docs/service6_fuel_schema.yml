@@ -1,0 +1,30 @@
+FuelConsumption:
+  type: object
+  properties:
+    fuel_id:
+      type: integer
+      description: "Unique identifier for the fuel consumption record."
+    vehicle_id:
+      type: integer
+      description: "Foreign key reference to the vehicle's unique ID."
+    fuel_type:
+      type: string
+      enum:
+        - petrol
+        - diesel
+        - electric
+        - hybrid
+        - not_specified
+      description: "Type of fuel consumed."
+    amount:
+      type: number
+      format: float
+      description: "Amount of fuel consumed in liters."
+    date:
+      type: string
+      format: date
+      description: "Date when the fuel consumption was recorded."
+    cost:
+      type: number
+      format: float
+      description: "Cost of the fuel consumed."

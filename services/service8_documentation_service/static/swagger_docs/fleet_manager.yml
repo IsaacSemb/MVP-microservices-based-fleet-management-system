@@ -1,0 +1,810 @@
+# information about swagger
+openapi: "3.0.0"
+info:
+  title: "Fleet Manager API"
+  description: "Centralized API documentation for Driver and Vehicle services."
+  version: "1.0.0"
+
+# all routes for the entire architecture
+paths:
+  # SERVICE 1 DRIVER SERVICE ROUTES
+  /drivers:
+    # type of request it is
+    post:
+      tags:
+        - "SERVICE 1: Driver APIs"
+      servers:
+        - url: "http://localhost:5001"
+      summary: "Create a driver and write the record to the database"
+      description: |
+        This endpoint allows clients to create a new driver by providing the necessary details.   
+        If youre to try this ensure that trials have different licenses   
+        because the license is a unique field.
+
+      requestBody: # Define the request body
+        description: "Driver object that needs to be added to the database"
+        required: true
+        content:
+          application/json: # Input content type
+            schema:
+              $ref: "#/components/schemas/Driver" # Reuse the Driver schema
+            example: # Example of the input
+              first_name: "are-You-Not-entertained?"
+              last_name: "Semb"
+              license_no: "D123456789"
+              contact_info: "123-456-789"
+              sex: "Male"
+              status: "available"
+      responses: # Define possible responses
+        "201":
+          description: "Driver created successfully."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Driver"
+              example:
+                driver_id: 1
+                first_name: "John"
+                last_name: "Doe"
+                license_no: "D123456789"
+                contact_info: "123-456-789"
+                sex: "Male"
+                status: "available"
+        "400":
+          $ref: "./response_codes.yml#/responseCodes/RequestBodyError"
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
+    get:
+      tags:
+        - "SERVICE 1: Driver APIs"
+      # the url to call
+      servers:
+        - url: "http://localhost:5001"
+
+      summary: "Retrieve all drivers"
+      description: "Fetch a list of all drivers in the system with options for details only, summary only, or full (summary and details)."
+
+      parameters:
+        - name: response_type
+          in: query
+          required: false
+          description: >
+            Possible parameters to use    
+              - summary
+              - details
+              - full      
+            Default is full
+          schema:
+            type: string
+            enum:
+              - summary
+              - details
+              - full
+            default: full
+
+      responses: # possible responses of this route
+        "200":
+          description: "List of drivers retrieved successfully (default parameter is full response)."
+          content: # details about the content of this response
+            application/json: # response content type
+              schema: # the data structure of the response
+                type: array
+                items: # the objects inside the type
+                  $ref: "#/components/schemas/Driver"
+              example:
+                summary:
+                  total_drivers: 10
+                  status_summary:
+                    available: 3
+                    assigned: 4
+                    active: 2
+                    unavailable: 1
+                details:
+                  - driver_id: 1
+                    first_name: "isaac"
+                    last_name: "semb"
+                    license_no: "ABC123"
+                    contact_info: "5555-777"
+                    sex: "male"
+                    status: "active"
+
+                  - driver_id: 1
+                    first_name: "mimi"
+                    last_name: "masette"
+                    license_no: "WWW123"
+                    contact_info: "222-777"
+                    sex: "female"
+                    status: "available"
+              description: "this is a full detail response"
+
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
+  /drivers/{driver_id}:
+    get:
+      tags:
+        - "SERVICE 1: Driver APIs"
+      servers:
+        - url: "http://localhost:5001"
+      summary: "Retrieve a driver by ID"
+      description: "Fetch details of a specific driver using their unique ID."
+      parameters: # Path parameter for driver_id
+        - name: driver_id
+          in: path
+          required: true
+          description: "Unique ID of the driver to retrieve."
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: "Driver retrieved successfully."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Driver"
+              example:
+                driver_id: 1
+                first_name: "John"
+                last_name: "Doe"
+                license_no: "D123456789"
+                contact_info: "john.doe@example.com"
+                sex: "Male"
+                status: "available"
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
+    put:
+      tags:
+        - "SERVICE 1: Driver APIs"
+      servers:
+        - url: "http://localhost:5001"
+      summary: "Update a driver by ID search "
+      description: "Update details of a specific driver using their unique ID."
+      parameters:
+        - name: driver_id
+          in: path
+          required: true
+          description: "Unique ID of the driver to update."
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        description: |
+          Driver object with updated details.   
+          In this object, you just need to include the fields you need to change    
+          fields that aren't included default back to the already existing fields
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Driver"
+            example:
+              first_name: "mimi"
+              last_name: "masette"
+              license_no: "D987654321"
+              contact_info: "333-555-666"
+              sex: "Female"
+              status: "active"
+      responses:
+        "200":
+          description: "Driver updated successfully."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Driver"
+              example:
+                driver_id: 1
+                first_name: "Jane"
+                last_name: "Doe"
+                license_no: "D987654321"
+                contact_info: "jane.doe@example.com"
+                sex: "Female"
+                status: "active"
+        "400":
+          $ref: "./response_codes.yml#/responseCodes/RequestBodyError"
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+
+    delete:
+      tags:
+        - "SERVICE 1: Driver APIs"
+      servers:
+        - url: "http://localhost:5001"
+      summary: "delete a driver from database by unique ID search"
+      description: "deletes a specific driver from the database using their unique ID"
+      parameters:
+        - name: driver_id
+          in: path
+          required: true
+          description: "Unique ID of the driver to retrieve."
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          $ref: "./response_codes.yml#/responseCodes/successfulDeletion"
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
+  # SERVICE2 VEHICLE MANAGEMENT
+  /vehicles:
+    post:
+      tags:
+        - "SERVICE 2: Vehicle APIs"
+      servers:
+        - url: "http://localhost:5002"
+      summary: "Create a vehicle and write the record to the database"
+      description: |
+        This endpoint allows clients to create a new vehicle by providing the necessary details.   
+        If youre to try this ensure that trials have different reg_no   
+        because the reg_no is a unique field.
+
+      requestBody:
+        description: "Vehicle object that needs to be added to the database"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Vehicle"
+            example:
+              make: "toyota"
+              model: "corolla"
+              reg_no: "ABC123"
+              fuel_type: "petrol"
+              vehicle_type: "car"
+              status: "available"
+
+      responses: # Define possible responses
+        "201":
+          description: "vehicle created successfully."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Vehicle"
+              example:
+                make: "toyota"
+                model: "corolla"
+                reg_no: "ABC123"
+                fuel_type: "petrol"
+                vehicle_type: "car"
+                status: "available"
+        "400":
+          $ref: "./response_codes.yml#/responseCodes/RequestBodyError"
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
+    get:
+      tags:
+        - "SERVICE 2: Vehicle APIs"
+      servers:
+        - url: "http://localhost:5002"
+      summary: "Retrieve all vehicles"
+      description: |
+        Fetch a list of all vehicles in the system with options for   
+        details only    
+        summary only    
+        full (summary and details)
+
+      parameters:
+        - name: response_type
+          in: query
+          required: false
+          description: >
+            Possible parameters to use    
+              - summary
+              - details
+              - full      
+            Default is full
+          schema:
+            type: string
+            enum:
+              - summary
+              - details
+              - full
+            default: summary
+
+      responses:
+        "200":
+          description: "List of vehicles retrieved successfully (default parameter is full response)."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/vehicle"
+
+              example:
+                summary:
+                  total_by_type:
+                    Car:
+                      available: 1
+                      unavailable: 0
+                    Truck:
+                      available: 0
+                      unavailable: 0
+                    Van:
+                      available: 0
+                      unavailable: 0
+                    Not_specified:
+                      available: 1
+                      unavailable: 0
+                    total_vehicles:
+                      available: 2
+                      unavailable: 0
+                  total_vehicles: 2
+                details:
+                  - vehicle_id: 1
+                    make: "MG"
+                    model: "MGB"
+                    reg_no: "EVR9645"
+                    fuel_type: "hybrid"
+                    vehicle_type: "not_specified"
+                    status: "available"
+
+                  - vehicle_id: 2
+                    make: "Toyota"
+                    model: "Corolla"
+                    reg_no: "ABC123"
+                    fuel_type: "petrol"
+                    vehicle_type: "car"
+                    status: "available"
+
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
+  /vehicles/{vehicle_id}:
+    get:
+      tags:
+        - "SERVICE 2: Vehicle APIs"
+      servers:
+        - url: "http://localhost:5002"
+      summary: "Retrieve a vehicle by ID"
+      description: "Fetch details of a specific vehicle using their unique ID."
+      parameters:
+        - name: vehicle_id
+          in: path
+          required: true
+          description: "Unique ID of the vehicle to retrieve."
+          schema:
+            type: integer
+            example: 3
+      responses:
+        "200":
+          description: "vehicle retrieved successfully."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Vehicle"
+              example:
+                vehicle_id: 1
+                make: "MG"
+                model: "MGB"
+                reg_no: "EVR9645"
+                fuel_type: "hybrid"
+                vehicle_type: "not_specified"
+                status: "available"
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
+    put:
+      tags:
+        - "SERVICE 2: Vehicle APIs"
+      servers:
+        - url: "http://localhost:5002"
+      summary: "Update a vehicle by ID search "
+      description: "Update details of a specific vehicle using their unique ID."
+      parameters:
+        - name: vehicle_id
+          in: path
+          required: true
+          description: "Unique ID of the vehicle to update."
+          schema:
+            type: integer
+            example: 2
+      requestBody:
+        description: |
+          vehicle object with updated details.   
+          In this object, you just need to include the fields you need to change    
+          fields that aren't included default back to the already existing fields
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Vehicle"
+            example:
+              make: "MG"
+              model: "MGB"
+              fuel_type: "hybrid"
+              vehicle_type: "not_specified"
+              status: "available"
+
+      responses:
+        "200":
+          description: "vehicle updated successfully."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Vehicle"
+              example:
+                vehicle_id: 5
+                make: "MG"
+                model: "MGB"
+                reg_no: "EVR9645"
+                fuel_type: "hybrid"
+                vehicle_type: "not_specified"
+                status: "available"
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+
+    delete:
+      tags:
+        - "SERVICE 2: Vehicle APIs"
+      servers:
+        - url: "http://localhost:5002"
+      summary: "delete a vehicle from database by unique ID search"
+      description: "deletes a specific vehicle from the database using their unique ID"
+      parameters:
+        - name: vehicle_id
+          in: path
+          required: true
+          description: "Unique ID of the vehicle to delete."
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          $ref: "./response_codes.yml#/responseCodes/successfulDeletion"
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
+  # SERVICE3 ASSIGNMENTS
+  /assignments:
+    post:
+      tags:
+        - "SERVICE 3: Driver-Vehicle Assignment APIs"
+      servers:
+        - url: "http://localhost:5003"
+      summary: "Create a assignment and write the record to the database"
+      description: |
+        This endpoint allows clients to create a new assignment by providing the necessary details.   
+        the service first checks the driver and vehicle services for existence of their IDs   
+        if they dont exist, you get an error message
+
+      requestBody:
+        description: "assignment object that needs to be added to the database"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Assignment"
+            example:
+              driver_id: 1
+              vehicle_id: 1
+              start_date_time: "2025-02-01"
+              end_date_time: "2025-02-08"
+              status: "scheduled"
+
+      responses:
+        "201":
+          description: "assignment created successfully."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Assignment"
+              example:
+                assignment_id: 1
+                driver_id: 2
+                vehicle_id: 3
+                start_date_time: "2025-02-01"
+                end_date_time: "2025-02-08"
+                status: "scheduled"
+        "400":
+          $ref: "./response_codes.yml#/responseCodes/RequestBodyError"
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
+    get:
+      tags:
+        - "SERVICE 3: Driver-Vehicle Assignment APIs"
+      servers:
+        - url: "http://localhost:5003"
+      summary: "Retrieve all assignments"
+      description: |
+        Fetch a list of all assignments in the system with options for   
+        details only    
+        summary only    
+        full (summary and details)
+
+      parameters:
+        - name: response_type
+          in: query
+          required: false
+          description: >
+            Possible parameters to use    
+              - summary
+          schema:
+            type: string
+            enum:
+              - summary
+
+            default: summary
+
+      responses:
+        "200":
+          description: "List of assignments retrieved successfully (default parameter is full response)."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Assignment"
+
+              example: none
+
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
+  /assignments/{assignment_id}:
+    get:
+      tags:
+        - "SERVICE 3: Driver-Vehicle Assignment APIs"
+      servers:
+        - url: "http://localhost:5003"
+      summary: "Retrieve a assignment by ID"
+      description: "Fetch details of a specific assignment using its unique ID."
+      parameters:
+        - name: assignment_id
+          in: path
+          required: true
+          description: "Unique ID of the assignment to retrieve."
+          schema:
+            type: integer
+            example: 3
+      responses:
+        "200":
+          description: "assignment retrieved successfully."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Assignment"
+              example: none
+
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
+    put:
+      tags:
+        - "SERVICE 3: Driver-Vehicle Assignment APIs"
+      servers:
+        - url: "http://localhost:5003"
+      summary: "Update a assignment by ID search "
+      description: "Update details of a specific assignment using their unique ID."
+      parameters:
+        - name: assignment_id
+          in: path
+          required: true
+          description: "Unique ID of the assignment to update."
+          schema:
+            type: integer
+            example: 2
+      requestBody:
+        description: |
+          assignment object with updated details.   
+          In this object, you just need to include the fields you need to change    
+          fields that aren't included default back to the already existing fields
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Assignment"
+            example: none
+
+      responses:
+        "200":
+          description: "assignment updated successfully."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Assignment"
+              example: none
+
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+
+    delete:
+      tags:
+        - "SERVICE 3: Driver-Vehicle Assignment APIs"
+      servers:
+        - url: "http://localhost:5003"
+      summary: "delete a assignment from database by unique ID search"
+      description: "deletes a specific assignment from the database using their unique ID"
+      parameters:
+        - name: assignment_id
+          in: path
+          required: true
+          description: "Unique ID of the assignment to delete."
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          $ref: "./response_codes.yml#/responseCodes/successfulDeletion"
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+        "503":
+          $ref: "./response_codes.yml#/responseCodes/ServiceDownError"
+
+  # SERVICE4 MAINTENANCE REPAIRS
+  /maintenance:
+    get:
+      tags:
+        - "SERVICE 4: Maintenance-Repairs APIs"
+      servers:
+        - url: ""
+      summary: ""
+      description: ""
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: ""
+                items:
+                  $ref: ""
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+
+  # SERVICE5 SCHEDULING
+  /schedules:
+    get:
+      tags:
+        - "SERVICE 5: Schedule APIs"
+      servers:
+        - url: ""
+      summary: ""
+      description: ""
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: ""
+                items:
+                  $ref: ""
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+
+  # SERVICE6 FUEL CONSUMPTION SERVICE
+  /fuel:
+    get:
+      tags:
+        - "SERVICE 6: Fuel Consuption APIs"
+      servers:
+        - url: ""
+      summary: ""
+      description: ""
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: ""
+                items:
+                  $ref: ""
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+
+  # SERVICE7 TASKS SERVICES
+  /tasks:
+    get:
+      tags:
+        - "SERVICE 7: Tasks APIs"
+      servers:
+        - url: ""
+      summary: ""
+      description: ""
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: ""
+                items:
+                  $ref: ""
+        "404":
+          $ref: "./response_codes.yml#/responseCodes/resourceNotFound"
+        "500":
+          $ref: "./response_codes.yml#/responseCodes/InternalServerError"
+
+# REUSABLE COMPONENTS
+components:
+  schemas:
+    Driver:
+      $ref: "./service1_driver_schema.yml#/Driver"
+    Vehicle:
+      $ref: "./service2_vehicle_schema.yml#/Vehicle"
+    Assignment:
+      $ref: "./service3_assignment_schema.yml#/Assignment"
+    Maintenance:
+      $ref: "./service4_maintenance_schema.yml#/Maintenance"
+    Schedule:
+      $ref: "./service5_schedule_schema.yml#/Schedule"
+    FuelConsumption:
+      $ref: "./service6_fuel_schema.yml#/FuelConsumption"
+    Task:
+      $ref: "./service7_task_schema.yml#/Task"
+
+  responses:
+    $ref: "./response_codes.yml#/responseCodes"
+
+  example:
+    make: "toyota"
+    model: "corolla"
+    reg_no: "ABC123"
+    fuel_type: "petrol"
+    vehicle_type: "car"
+    status: "available"
