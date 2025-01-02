@@ -1,4 +1,3 @@
-```markdown
 # MVP Microservices-Based Fleet Management System
 
 Welcome to the MVP Microservices-Based Fleet Management System! This project is part of a dissertation aimed at demonstrating the viability of using a **microservices architecture** as opposed to a monolithic architecture. The project is also designed for personal learning and future advancements.
@@ -86,4 +85,3 @@ This link provides access to the API documentation and available endpoints.
 ---
 
 That's it! You're ready to interact with the Fleet Management System APIs. 🚀
-```
