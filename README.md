@@ -85,4 +85,3 @@ This link provides access to the API documentation and available endpoints.
 ---
 
 That's it! You're ready to interact with the Fleet Management System APIs. 🚀
-```
