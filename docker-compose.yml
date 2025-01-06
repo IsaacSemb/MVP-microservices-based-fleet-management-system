@@ -1,4 +1,3 @@
-
 version: "3.9"
 
 services:
@@ -11,8 +10,9 @@ services:
       # MYSQL_DATABASE: driver_management # defalut database
     ports:
       - "3306:3306"
-    healthcheck:  # Ensures MySQL is fully ready
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1234"]
+    healthcheck: # Ensures MySQL is fully ready
+      test:
+        ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1234"]
       interval: 10s
       retries: 5
       timeout: 5s
@@ -32,7 +32,7 @@ services:
       PMA_USER: root
       PMA_PASSWORD: 1234
     ports:
-      - "8080:80"  # Accessible at http://localhost:8080
+      - "8080:80" # Accessible at http://localhost:8080
     depends_on:
       mysql:
         condition: service_healthy
@@ -47,11 +47,10 @@ services:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
     ports:
-      - "5672:5672"   # AMQP port
+      - "5672:5672" # AMQP port
       - "15672:15672" # Management UI: http://localhost:15672
     networks:
       - app_network
-  
 
   # 4. Service 1 - Driver Management
   service1_driver_management:
@@ -64,10 +63,10 @@ services:
     env_file:
       - .env.docker
     environment:
-      SERVICE_1_DB_NAME: ${SERVICE_1_DB_NAME}
+      SERVICE_1_DB_NAME: driver_management # ${SERVICE_1_DB_NAME}
     volumes:
-      - ./services/service1_driver_management:/app/services/service1_driver_management  # Mount local code to container
-      - ./common:/app/common  # Mount the shared 'common' folder
+      - ./services/service1_driver_management:/app/services/service1_driver_management # Mount local code to container
+      - ./common:/app/common # Mount the shared 'common' folder
     depends_on:
       mysql:
         condition: service_healthy
@@ -75,7 +74,7 @@ services:
         condition: service_started
     networks:
       - app_network
-      
+
   # Additional services: Service 2 to Service 7
   service2_vehicle_management:
     build:
@@ -87,7 +86,7 @@ services:
     env_file:
       - .env.docker
     environment:
-      SERVICE_2_DB_NAME: ${SERVICE_2_DB_NAME}
+      SERVICE_2_DB_NAME: vehicle_management # ${SERVICE_2_DB_NAME}
     volumes:
       - ./services/service2_vehicle_management:/app/services/service2_vehicle_management
       - ./common:/app/common
@@ -108,7 +107,7 @@ services:
     env_file:
       - .env.docker
     environment:
-      SERVICE_3_DB_NAME: ${SERVICE_3_DB_NAME}
+      SERVICE_3_DB_NAME: assignments # ${SERVICE_3_DB_NAME}
     volumes:
       - ./services/service3_assignments:/app/services/service3_assignments
       - ./common:/app/common
@@ -153,7 +152,7 @@ services:
     env_file:
       - .env.docker
     environment:
-      SERVICE_5_DB_NAME: ${SERVICE_5_DB_NAME}
+      SERVICE_5_DB_NAME: schedules # ${SERVICE_5_DB_NAME}
     volumes:
       - ./services/service5_scheduling:/app/services/service5_scheduling
       - ./common:/app/common
@@ -175,7 +174,7 @@ services:
     env_file:
       - .env.docker
     environment:
-      SERVICE_6_DB_NAME: ${SERVICE_6_DB_NAME}
+      SERVICE_6_DB_NAME: fuel_consumption # ${SERVICE_6_DB_NAME}
     volumes:
       - ./services/service6_fuel_consumption_service:/app/services/service6_fuel_consumption_service
       - ./common:/app/common
@@ -197,7 +196,7 @@ services:
     env_file:
       - .env.docker
     environment:
-      SERVICE_7_DB_NAME: ${SERVICE_7_DB_NAME}
+      SERVICE_7_DB_NAME: tasks # ${SERVICE_7_DB_NAME}
     volumes:
       - ./services/service7_tasks_services:/app/services/service7_tasks_services
       - ./common:/app/common
@@ -218,9 +217,9 @@ services:
     env_file:
       - .env.docker
     # environment:
-      # SERVICE_7_DB_NAME: ${SERVICE_7_DB_NAME}
+    # SERVICE_7_DB_NAME: ${SERVICE_7_DB_NAME}
     volumes:
-      - ./services/service8_documentation_service/static:/app/services/service8_documentation_service/static  # Mount the static folder
+      - ./services/service8_documentation_service/static:/app/services/service8_documentation_service/static # Mount the static folder
       - ./common:/app/common
     depends_on:
       mysql:
