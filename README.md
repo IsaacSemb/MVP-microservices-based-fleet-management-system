@@ -6,19 +6,19 @@ Welcome to the MVP Microservices-Based Fleet Management System! This project is 
 
 The following microservices have been included in this project: 
 
-1. **Driver Service**  
+1. **Drivers Service**  
    - Stores driver details.
    - Manages driver-related logic, such as availability.
 
-2. **Vehicle Service**  
+2. **Vehicles Service**  
    - Stores vehicle data.
    - Handles vehicle-related logic, including availability.
 
-3. **Assignment Service**  
+3. **Assignments Service**  
    - Manages the logic of assigning drivers to vehicles.
    - Handles sorting of driver and vehicle availability.
 
-4. **Maintenance Service**  
+4. **Maintenances and Repair Service**  
    - Responsible for routine maintenance, repairs, and predictive maintenance logic.
 
 5. **Scheduling Service**  
